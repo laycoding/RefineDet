@@ -1,6 +1,19 @@
 from __future__ import print_function
 import sys
-sys.path.append("./python")
+import os.path as osp
+def add_path(path):
+    if path not in sys.path:
+        sys.path.insert(0, path)
+this_dir = '/workspace/run/huajianni/RefineDet'
+# Add caffe to PYTHONPATH
+caffe_path = osp.join(this_dir, 'python')
+add_path(caffe_path)
+
+# Add lib to PYTHONPATH
+lib_path = osp.join(this_dir,  'lib')
+add_path(lib_path)
+from caffe.proto import caffe_pb2
+from google.protobuf import text_format
 import caffe
 from caffe.model_libs import *
 from google.protobuf import text_format
@@ -331,12 +344,12 @@ clip = False
 
 # Solver parameters.
 # Defining which GPUs to use.
-gpus = "0,1,2,3"
+gpus = "0"
 gpulist = gpus.split(",")
 num_gpus = len(gpulist)
 
 # Divide the mini-batch to different GPUs.
-batch_size = 32
+batch_size = 8
 accum_batch_size = 32
 iter_size = accum_batch_size / batch_size
 solver_mode = P.Solver.CPU
