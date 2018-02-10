@@ -2456,7 +2456,7 @@ vector<cv::Scalar> GetColors(const int n) {
 
 static clock_t start_clock = clock();
 static cv::VideoWriter cap_out;
-
+int count=0;
 template <typename Dtype>
 void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                    const float threshold, const vector<cv::Scalar>& colors,
@@ -2530,28 +2530,34 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                  bboxes[j].score());
         cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
                                         &baseline);
-        cv::rectangle(
-            image, bottom_left_pt + cv::Point(0, 0),
-            bottom_left_pt + cv::Point(text.width, -text.height-baseline),
-            color, CV_FILLED);
-        cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
-                    fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
+       // cv::rectangle(
+       //     image, bottom_left_pt + cv::Point(0, 0),
+       //     bottom_left_pt + cv::Point(text.width, -text.height-baseline),
+       //     color, CV_FILLED);
+       // cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
+         //           fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
       }
     }
+        std::ifstream infile("/workspace/run/huajianni/RefineDet/data/Face2018/filelist.txt");
+        string line;
+        size_t pos;
+        int label;
+	vector<std::pair<std::string, int> > lines_;
+        while (std::getline(infile, line)) 
+       {
+          pos = line.find_last_of(' ');
+          label = atoi(line.substr(pos + 1).c_str());
+          lines_.push_back(std::make_pair(line.substr(0, pos), label));
+       }
+	char fileName1[1000];
+        sprintf(fileName1, "%s%s", "/workspace/run/huajianni/RefineDet/data/Face2018/testimgsresult/",lines_[count].first.c_str());
+	cv::imwrite(fileName1,image);
     // Save result if required.
-    if (!save_file.empty()) {
-      if (!cap_out.isOpened()) {
-        cv::Size size(image.size().width, image.size().height);
-        cv::VideoWriter outputVideo(save_file, CV_FOURCC('D', 'I', 'V', 'X'),
-            30, size, true);
-        cap_out = outputVideo;
-      }
-      cap_out.write(image);
-    }
-    cv::imshow("detections", image);
-    if (cv::waitKey(1) == 27) {
-      raise(SIGINT);
-    }
+    //cv::imshow("detections", image);
+   // if (cv::waitKey(1) == 27) {
+   //   raise(SIGINT);
+   // }
+    count++;
   }
   start_clock = clock();
 }

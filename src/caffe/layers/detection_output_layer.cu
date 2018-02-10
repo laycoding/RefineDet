@@ -13,7 +13,8 @@
 #include "boost/foreach.hpp"
 
 #include "caffe/layers/detection_output_layer.hpp"
-
+#include <iostream>
+using namespace std;
 namespace caffe {
 
 template <typename Dtype>
@@ -308,9 +309,15 @@ void DetectionOutputLayer<Dtype>::Forward_gpu(
   if (visualize_) {
 #ifdef USE_OPENCV
     vector<cv::Mat> cv_imgs;
-    this->data_transformer_->TransformInv(bottom[3], &cv_imgs);
-    vector<cv::Scalar> colors = GetColors(label_to_display_name_.size());
-    VisualizeBBox(cv_imgs, top[0], visualize_threshold_, colors,
+     this->data_transformer_->TransformInv(bottom[5], &cv_imgs);
+     vector<cv::Scalar> colors;// = GetColors(label_to_display_name_.size());
+     colors.push_back(cv::Scalar(255,0,0));
+     colors.push_back(cv::Scalar(0,255,0));
+     colors.push_back(cv::Scalar(0,0,255));
+     colors.push_back(cv::Scalar(255,255,0));
+     colors.push_back(cv::Scalar(255,0,255));
+     colors.push_back(cv::Scalar(0,255,255));
+      VisualizeBBox(cv_imgs, top[0], visualize_threshold_, colors,
         label_to_display_name_, save_file_);
 #endif  // USE_OPENCV
   }
