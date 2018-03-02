@@ -1041,15 +1041,16 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
   }
   const int sample_size = multibox_loss_param.sample_size();
   // Compute confidence losses based on matching results.
-  vector<vector<float> > all_conf_loss;
+  vector<vector<float> > all_conf_loss;//返回背影的损失
+  vector<vector<float> > all_bg_conf;//返回所在类别的最大置信度，若有在类别为0，则是设为0
 #ifdef CPU_ONLY
   ComputeConfLoss(conf_blob.cpu_data(), num, num_priors, num_classes,
       background_label_id, conf_loss_type, *all_match_indices, all_gt_bboxes,
-      &all_conf_loss);
+      &all_conf_loss);//每一个预义框对应的类别置信度损失值
 #else
   ComputeConfLossGPU(conf_blob, num, num_priors, num_classes,
       background_label_id, conf_loss_type, *all_match_indices, all_gt_bboxes,
-      &all_conf_loss);
+      &all_conf_loss);//每一个预义框对应的类别置信度损失值
 #endif
   vector<vector<float> > all_loc_loss;
   if (mining_type == MultiBoxLossParameter_MiningType_HARD_EXAMPLE) {
@@ -1087,6 +1088,44 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
     // Pick negatives or hard examples based on loss.
     set<int> sel_indices;
     vector<int> neg_indices;
+    //如果为无标签的负样本图像
+    if(0==match_indices.size()&&arm_conf_data != NULL)
+    {
+      int num_sel = 0;
+      // Get potential indices and loss pairs.
+      vector<pair<float, int> > loss_indices;
+      for (int m = 0; m < num_priors; ++m) {
+        //返回ODM网络的无label样本中高置信度负样本
+           if(arm_conf_data[i*num_priors*2+2*m+1] >= objectness_score){
+              loss_indices.push_back(std::make_pair(loss[m], m));
+              ++num_sel;
+        }
+      }
+
+      // Do nms before selecting samples.
+      vector<float> sel_loss;
+      vector<NormalizedBBox> sel_bboxes;
+      // Decode the prediction into bbox first.
+      vector<NormalizedBBox> loc_bboxes;
+      bool clip_bbox = false;
+      DecodeBBoxes(prior_bboxes, prior_variances,
+                   code_type, encode_variance_in_target, clip_bbox,
+                   all_loc_preds[i].find(label)->second, &loc_bboxes);
+      for (int m = 0; m < loss_indices.size(); ++m) {
+          sel_loss.push_back(loss_indices[m].first);
+          sel_bboxes.push_back(loc_bboxes[loss_indices[m].second]);
+      }
+      // Do non-maximum suppression based on the loss.
+      vector<int> nms_indices;
+      ApplyNMS(sel_bboxes, sel_loss, nms_threshold, top_k, &nms_indices);
+      // Pick top example indices after nms.
+      num_sel = std::min(static_cast<int>(nms_indices.size()), num_sel);
+      for (int n = 0; n < num_sel; ++n) {
+        // Update select neg_indices.
+        neg_indices.push_back(loss_indices[nms_indices[n]].second);
+        *num_negs += 1;
+      }
+    }else{
     for (map<int, vector<int> >::iterator it = match_indices.begin();
          it != match_indices.end(); ++it) {
       const int label = it->first;
@@ -1121,7 +1160,7 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
         num_sel = std::min(sample_size, num_sel);
       }
       // Select samples.
-      if (has_nms_param && nms_threshold > 0) {
+      if(0) {  //has_nms_param && nms_threshold > 0) {
         // Do nms before selecting samples.
         vector<float> sel_loss;
         vector<NormalizedBBox> sel_bboxes;
@@ -1183,7 +1222,8 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
         }
       }
     }
-    all_neg_indices->push_back(neg_indices);
+  }
+  all_neg_indices->push_back(neg_indices);
   }
 }
 
@@ -2543,7 +2583,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         size_t pos;
         int label;
 	vector<std::pair<std::string, int> > lines_;
-        while (std::getline(infile, line)) 
+        while (std::getline(infile, line))
        {
           pos = line.find_last_of(' ');
           label = atoi(line.substr(pos + 1).c_str());
