@@ -1,5 +1,18 @@
 from __future__ import print_function
 import sys
+import os.path as osp
+def add_path(path):
+    if path not in sys.path:
+        sys.path.insert(0, path)
+this_dir = '/workspace/run/huajianni/RefineDet'
+# Add caffe to PYTHONPATH
+caffe_path = osp.join(this_dir, 'python')
+add_path(caffe_path)
+
+# Add lib to PYTHONPATH
+lib_path = osp.join(this_dir,  'lib')
+add_path(lib_path)
+import sys
 sys.path.append("./python")
 import caffe
 from caffe.model_libs import *
@@ -69,7 +82,7 @@ def AddExtraLayers(net, arm_source_layers=[], use_batchnorm=True):
 caffe_root = os.getcwd()
 
 # Set true if you want to start training right after generating all files.
-run_soon = True
+run_soon = False
 # Set true if you want to load from most recently saved snapshot.
 # Otherwise, we will load from the pretrain_model defined below.
 resume_training = True
