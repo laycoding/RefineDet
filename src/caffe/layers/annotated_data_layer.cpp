@@ -1,5 +1,7 @@
 #ifdef USE_OPENCV
 #include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
 #endif  // USE_OPENCV
 #include <stdint.h>
 
@@ -106,7 +108,7 @@ void AnnotatedDataLayer<Dtype>::DataLayerSetUp(
     }
   }
 }
-
+int BatchIter=0;
 // This function is called on prefetch thread
 template<typename Dtype>
 void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
@@ -299,6 +301,55 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     } else {
       LOG(FATAL) << "Unknown annotation type.";
     }
+   }
+   if(0)
+  {
+   //debug input data and save the imgs draw with bbox
+   //convert to Mat
+   vector<cv::Mat> cv_imgs;
+  // LOG(INFO)<<"batch: "<<batch->data_.shape(0)<<"channel: "<<batch->data_.shape(1)<<"width: "<<batch->data_.shape(2)<<"height: "<<batch->data_.shape(3);
+   this->data_transformer_->TransformInv(&(batch->data_), &cv_imgs);
+  // LOG(INFO) <<"cv_imgs size: "<<cv_imgs.size();
+   //draw bbox
+   if(num_bboxes>0)
+   {
+     int fontface = cv::FONT_HERSHEY_SIMPLEX;
+     double scale = 1;
+     int thickness = 2;
+     int baseline = 0;
+     char buffer[50];
+     const Dtype* const_top_label = batch->label_.cpu_data();
+     for(int iter=0;iter<batch->label_.count()/8;iter++)
+     {
+      const Dtype* tmp = const_top_label+iter*8;
+      int item_id=tmp[0];
+      int width=cv_imgs[item_id].cols;
+      int height=cv_imgs[item_id].rows;
+      cv::Point top_left_pt(width*tmp[3], height*tmp[4]);
+      cv::Point bottom_right_pt(width*tmp[5], height*tmp[6]);
+      cv::rectangle(cv_imgs[item_id], top_left_pt, bottom_right_pt, CV_RGB(0, 255, 0), 4);
+      cv::Point bottom_left_pt(width*tmp[3], height*tmp[6]);
+      snprintf(buffer, sizeof(buffer), "%d", tmp[2]);
+      cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
+                                        &baseline);
+      //cv::rectangle(
+      //      cv_imgs[item_id], bottom_left_pt + cv::Point(0, 0),
+      //      bottom_left_pt + cv::Point(text.width, -text.height-baseline),
+      //      CV_RGB(0, 255, 0), CV_FILLED);
+      cv::putText(cv_imgs[item_id], buffer, bottom_left_pt - cv::Point(0, baseline),
+                    fontface, scale, CV_RGB(0, 0, 0), thickness, 2); 
+     }
+ 
+   }
+   //save the draw training imgs
+   char buffer[200];
+   for(int iter=0;iter<cv_imgs.size();iter++)
+   {
+    snprintf(buffer,sizeof(buffer),"%s%d_%d.jpg","/workspace/run/huajianni/RefineDet/data/Face2018/trainimgsresult/",BatchIter,iter);
+   // LOG(INFO)<<"result:"<<buffer;
+    cv::imwrite(buffer,cv_imgs.at(iter));
+   }
+  BatchIter++;
   }
   timer.Stop();
   batch_timer.Stop();

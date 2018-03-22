@@ -1096,7 +1096,7 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
       vector<pair<float, int> > loss_indices;
       for (int m = 0; m < num_priors; ++m) {
         //返回ODM网络的无label样本中高置信度负样本
-           if(arm_conf_data[i*num_priors*2+2*m+1] >= objectness_score){
+          if(arm_conf_data[i*num_priors*2+2*m+1] >= objectness_score&&std::exp(-loss[m])<0.5){
               loss_indices.push_back(std::make_pair(loss[m], m));
               ++num_sel;
         }
@@ -1110,7 +1110,7 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
       bool clip_bbox = false;
       DecodeBBoxes(prior_bboxes, prior_variances,
                    code_type, encode_variance_in_target, clip_bbox,
-                   all_loc_preds[i].find(label)->second, &loc_bboxes);
+                   all_loc_preds[i].find(-1)->second, &loc_bboxes);
       for (int m = 0; m < loss_indices.size(); ++m) {
           sel_loss.push_back(loss_indices[m].first);
           sel_bboxes.push_back(loc_bboxes[loss_indices[m].second]);
@@ -1120,11 +1120,13 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
       ApplyNMS(sel_bboxes, sel_loss, nms_threshold, top_k, &nms_indices);
       // Pick top example indices after nms.
       num_sel = std::min(static_cast<int>(nms_indices.size()), num_sel);
+      //LOG(INFO) <<"total priox: "<<num_priors<<" sel_bboxes:"<<sel_bboxes.size()<<" top_k:"<<top_k<<" nms_indices:"<<num_sel;
       for (int n = 0; n < num_sel; ++n) {
         // Update select neg_indices.
         neg_indices.push_back(loss_indices[nms_indices[n]].second);
         *num_negs += 1;
       }
+      //LOG(INFO) <<"num_negs:"<<num_sel;
     }else{
     for (map<int, vector<int> >::iterator it = match_indices.begin();
          it != match_indices.end(); ++it) {
@@ -2578,6 +2580,8 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
          //           fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
       }
     }
+if(0)
+{
         std::ifstream infile("/workspace/run/huajianni/RefineDet/data/Face2018/filelist.txt");
         string line;
         size_t pos;
@@ -2592,11 +2596,13 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
 	char fileName1[1000];
         sprintf(fileName1, "%s%s", "/workspace/run/huajianni/RefineDet/data/Face2018/testimgsresult/",lines_[count].first.c_str());
 	cv::imwrite(fileName1,image);
+}
     // Save result if required.
     //cv::imshow("detections", image);
    // if (cv::waitKey(1) == 27) {
    //   raise(SIGINT);
    // }
+
     count++;
   }
   start_clock = clock();
