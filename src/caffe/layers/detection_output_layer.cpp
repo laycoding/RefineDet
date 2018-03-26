@@ -27,6 +27,11 @@ void DetectionOutputLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   variance_encoded_in_target_ =
       detection_output_param.variance_encoded_in_target();
   keep_top_k_ = detection_output_param.keep_top_k();
+  source_ = detection_output_param.source();
+  root_folder_ =detection_output_param.root_folder();
+  save_txt_ =detection_output_param.save_txt();
+  save_draw_img_ = detection_output_param.save_draw_img();
+  save_dir_=detection_output_param.save_dir(); 
   confidence_threshold_ = detection_output_param.has_confidence_threshold() ?
       detection_output_param.confidence_threshold() : -FLT_MAX;
   // Parameters used in nms.

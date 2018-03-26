@@ -111,6 +111,11 @@ class DetectionOutputLayer : public Layer<Dtype> {
   Blob<Dtype> bbox_preds_;
   Blob<Dtype> bbox_permute_;
   Blob<Dtype> conf_permute_;
+  string source_;
+  string root_folder_;
+  bool save_txt_;
+  bool save_draw_img_;
+  string save_dir_;
 };
 
 }  // namespace caffe

@@ -1036,6 +1036,12 @@ message DetectionOutputParameter {
   optional string save_file = 12;
   //the objectness score is used for the anchor refinement module to filter easy negative anchor.
   optional float objectness_score = 24 [default = 0.01];
+  optional string source = 25;
+  optional string root_folder = 26;
+  optional bool save_txt = 27 [default = false];
+  optional bool save_draw_img =28 [default = false];
+  optional string save_dir =29;
+  
 }
 
 message DropoutParameter {

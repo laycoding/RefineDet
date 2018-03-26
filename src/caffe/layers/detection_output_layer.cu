@@ -318,7 +318,7 @@ void DetectionOutputLayer<Dtype>::Forward_gpu(
      colors.push_back(cv::Scalar(255,0,255));
      colors.push_back(cv::Scalar(0,255,255));
       VisualizeBBox(cv_imgs, top[0], visualize_threshold_, colors,
-        label_to_display_name_, save_file_);
+        label_to_display_name_, save_file_,source_,root_folder_,save_txt_,save_draw_img_,save_dir_);
 #endif  // USE_OPENCV
   }
 }

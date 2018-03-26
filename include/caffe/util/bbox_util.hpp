@@ -563,7 +563,7 @@ template <typename Dtype>
 void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                    const float threshold, const vector<cv::Scalar>& colors,
                    const map<int, string>& label_to_display_name,
-                   const string& save_file);
+                   const string& save_file,string source_="",string root_folder_="",bool save_txt_=false,bool save_draw_img_=false,string save_draw_img_dir_="");
 #endif  // USE_OPENCV
 
 }  // namespace caffe

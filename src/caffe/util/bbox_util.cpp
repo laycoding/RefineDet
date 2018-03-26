@@ -7,7 +7,7 @@
 #include <string>
 #include <utility>
 #include <vector>
-
+#include <stdio.h>
 #include "boost/iterator/counting_iterator.hpp"
 
 #include "caffe/util/bbox_util.hpp"
@@ -2503,7 +2503,7 @@ template <typename Dtype>
 void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                    const float threshold, const vector<cv::Scalar>& colors,
                    const map<int, string>& label_to_display_name,
-                   const string& save_file) {
+                   const string& save_file,string source,string root_folder,bool save_txt,bool save_draw_img,string save_dir) {
   // Retrieve detections.
   CHECK_EQ(detections->width(), 7);
   const int num_det = detections->height();
@@ -2560,17 +2560,71 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
       if (label_to_display_name.find(label) != label_to_display_name.end()) {
         label_name = label_to_display_name.find(label)->second;
       }
-      CHECK_LT(label, colors.size());
-      const cv::Scalar& color = colors[label];
-      const vector<NormalizedBBox>& bboxes = it->second;
-      for (int j = 0; j < bboxes.size(); ++j) {
-        cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
-        cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
-        cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
-        cv::Point bottom_left_pt(bboxes[j].xmin(), bboxes[j].ymax());
-        snprintf(buffer, sizeof(buffer), "%s: %.2f", label_name.c_str(),
+      if(save_txt)
+      {
+        std::ifstream infile(source.c_str());
+        string line;
+        size_t pos;
+        int label;
+        vector<std::pair<std::string, int> > lines_;
+        while (std::getline(infile, line))
+        {
+          pos = line.find_last_of(' ');
+          label = atoi(line.substr(pos + 1).c_str());
+          lines_.push_back(std::make_pair(line.substr(0, pos), label));
+        }
+        char fileName1[1000];
+        string imgname=lines_[count].first;
+        sprintf(fileName1, "%s%s.txt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+        cv::Mat testimg=cv::imread(root_folder+lines_[count].first);
+        int testimgWidth=testimg.cols;
+        int testimgHeight=testimg.rows;
+        //LOG(INFO)<<fileName1;
+        CHECK_LT(label, colors.size());
+        FILE* fid=NULL;//=fopen(fileName1,"w");
+        const cv::Scalar& color = colors[label];
+        const vector<NormalizedBBox>& bboxes = it->second;
+        for (int j = 0; j < bboxes.size(); ++j) {
+            if(label_name=="face")
+            { if(j==0)
+              {
+               fid=fopen(fileName1,"w");
+               //if(fid==NULL)
+               fprintf(fid,"%s\n",imgname.c_str()); 
+               fprintf(fid,"%d\n",bboxes.size());
+              }
+             fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width*testimgWidth),cvRound(bboxes[j].ymin()/height*testimgHeight),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight),bboxes[j].score());
+            }
+            cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
+            cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
+            cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
+            cv::Point bottom_left_pt(bboxes[j].xmin(), bboxes[j].ymax());
+            snprintf(buffer, sizeof(buffer), "%s: %.2f", label_name.c_str(),
                  bboxes[j].score());
-        cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
+            cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
+                                        &baseline);
+            // cv::rectangle(
+            //     image, bottom_left_pt + cv::Point(0, 0),
+            //     bottom_left_pt + cv::Point(text.width, -text.height-baseline),
+            //     color, CV_FILLED);
+            // cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
+            //           fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
+        }
+       if(fid!=NULL)
+          fclose(fid);
+      }else
+      {
+        CHECK_LT(label, colors.size());
+        const cv::Scalar& color = colors[label];
+        const vector<NormalizedBBox>& bboxes = it->second;
+        for (int j = 0; j < bboxes.size(); ++j) {
+          cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
+          cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
+          cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
+          cv::Point bottom_left_pt(bboxes[j].xmin(), bboxes[j].ymax());
+          snprintf(buffer, sizeof(buffer), "%s: %.2f", label_name.c_str(),
+                 bboxes[j].score());
+          cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
                                         &baseline);
        // cv::rectangle(
        //     image, bottom_left_pt + cv::Point(0, 0),
@@ -2579,24 +2633,25 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
        // cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
          //           fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
       }
+     }
     }
-if(0)
-{
-        std::ifstream infile("/workspace/run/huajianni/RefineDet/data/Face2018/filelist.txt");
+	if(save_draw_img)
+       {
+        std::ifstream infile(source.c_str());
         string line;
         size_t pos;
         int label;
 	vector<std::pair<std::string, int> > lines_;
         while (std::getline(infile, line))
-       {
+        {
           pos = line.find_last_of(' ');
-          label = atoi(line.substr(pos + 1).c_str());
+	  label = atoi(line.substr(pos + 1).c_str());
           lines_.push_back(std::make_pair(line.substr(0, pos), label));
-       }
+        }
 	char fileName1[1000];
-        sprintf(fileName1, "%s%s", "/workspace/run/huajianni/RefineDet/data/Face2018/testimgsresult/",lines_[count].first.c_str());
+        sprintf(fileName1, "%s%s",save_dir.c_str(),lines_[count].first.c_str());
 	cv::imwrite(fileName1,image);
-}
+       }
     // Save result if required.
     //cv::imshow("detections", image);
    // if (cv::waitKey(1) == 27) {
@@ -2613,13 +2668,13 @@ void VisualizeBBox(const vector<cv::Mat>& images,
                    const Blob<float>* detections,
                    const float threshold, const vector<cv::Scalar>& colors,
                    const map<int, string>& label_to_display_name,
-                   const string& save_file);
+                   const string& save_file,string source,string root_folder,bool save_txt,bool save_draw_img,string save_draw_img_dir);
 template
 void VisualizeBBox(const vector<cv::Mat>& images,
                    const Blob<double>* detections,
                    const float threshold, const vector<cv::Scalar>& colors,
                    const map<int, string>& label_to_display_name,
-                   const string& save_file);
+                   const string& save_file,string source,string root_folder,bool save_txt,bool save_draw_img,string save_draw_img_dir);
 
 #endif  // USE_OPENCV
 
