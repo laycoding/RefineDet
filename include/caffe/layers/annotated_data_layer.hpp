@@ -36,6 +36,8 @@ class AnnotatedDataLayer : public BasePrefetchingDataLayer<Dtype> {
   AnnotatedDatum_AnnotationType anno_type_;
   vector<BatchSampler> batch_samplers_;
   string label_map_file_;
+  bool  savebatchimg_;
+  string savebatchimgdir_;
 };
 
 }  // namespace caffe

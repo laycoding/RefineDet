@@ -762,6 +762,8 @@ message AnnotatedDataParameter {
   // If provided, it will replace the AnnotationType stored in each
   // AnnotatedDatum.
   optional AnnotatedDatum.AnnotationType anno_type = 3;
+  optional bool savebatchimg = 4;
+  optional string savebatchimgdir =5;
 }
 
 message ArgMaxParameter {

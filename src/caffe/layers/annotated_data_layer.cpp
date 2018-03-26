@@ -37,6 +37,8 @@ void AnnotatedDataLayer<Dtype>::DataLayerSetUp(
     batch_samplers_.push_back(anno_data_param.batch_sampler(i));
   }
   label_map_file_ = anno_data_param.label_map_file();
+  savebatchimg_ = anno_data_param.savebatchimg();
+  savebatchimgdir_ = anno_data_param.savebatchimgdir();
   // Make sure dimension is consistent within batch.
   const TransformationParameter& transform_param =
     this->layer_param_.transform_param();
@@ -302,7 +304,7 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
       LOG(FATAL) << "Unknown annotation type.";
     }
    }
-   if(0)
+   if(savebatchimg_)
   {
    //debug input data and save the imgs draw with bbox
    //convert to Mat
@@ -329,7 +331,7 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
       cv::Point bottom_right_pt(width*tmp[5], height*tmp[6]);
       cv::rectangle(cv_imgs[item_id], top_left_pt, bottom_right_pt, CV_RGB(0, 255, 0), 4);
       cv::Point bottom_left_pt(width*tmp[3], height*tmp[6]);
-      snprintf(buffer, sizeof(buffer), "%d", tmp[2]);
+      snprintf(buffer, sizeof(buffer), "%d", int(tmp[1]));
       cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
                                         &baseline);
       //cv::rectangle(
@@ -345,7 +347,7 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
    char buffer[200];
    for(int iter=0;iter<cv_imgs.size();iter++)
    {
-    snprintf(buffer,sizeof(buffer),"%s%d_%d.jpg","/workspace/run/huajianni/RefineDet/data/Face2018/trainimgsresult/",BatchIter,iter);
+    snprintf(buffer,sizeof(buffer),"%s%d_%d.jpg",savebatchimgdir_.c_str(),BatchIter,iter);
    // LOG(INFO)<<"result:"<<buffer;
     cv::imwrite(buffer,cv_imgs.at(iter));
    }
