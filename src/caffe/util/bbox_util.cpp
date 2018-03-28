@@ -1105,7 +1105,7 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
 	  		code_type, false, clip_bbox,
 			arm_loc_preds, &decode_prior_bboxes);
       const vector<NormalizedBBox>& label_loc_preds = all_loc_preds[i].find(-1)->second;
-      vector<NormalizedBBox> loc_bboxes;   
+      vector<NormalizedBBox> loc_bboxes;
       DecodeBBoxes(decode_prior_bboxes, prior_variances,
                    code_type, false, clip_bbox,
                    label_loc_preds, &(loc_bboxes));
@@ -1120,7 +1120,7 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
               ++num_sel;
         }
       }
-      
+
       vector<float> sel_confs;
       vector<NormalizedBBox> sel_bboxes;
       for (int m = 0; m < loss_indices.size(); ++m) {
@@ -1147,7 +1147,7 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
        for(int kk=0;kk<num_sel;kk++)
        {
         cv::Point top_left_pt(sel_bboxes[nms_indices[kk]].xmin(), sel_bboxes[nms_indices[kk]].ymin());
-        cv::Point bottom_right_pt(sel_bboxes[nms_indices[kk]].xmax(), sel_bboxes[nms_indices[kk]].ymax()); 
+        cv::Point bottom_right_pt(sel_bboxes[nms_indices[kk]].xmax(), sel_bboxes[nms_indices[kk]].ymax());
         cv::Rect rectroi(sel_bboxes[nms_indices[kk]].xmin()*512,sel_bboxes[nms_indices[kk]].ymin()*512,(sel_bboxes[nms_indices[kk]].xmax()-sel_bboxes[nms_indices[kk]].xmin())*512,(sel_bboxes[nms_indices[kk]].ymax()-sel_bboxes[nms_indices[kk]].ymin())*512);
         cv::rectangle(img, rectroi.tl(), rectroi.br(), cv::Scalar(0,255,0), 4);
         sprintf(confbuffer, "%.3f", sel_confs[nms_indices[kk]]);
@@ -1160,8 +1160,8 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
                  CV_RGB(0,255,0), CV_FILLED);
             cv::putText(img, confbuffer, bottom_left_pt - cv::Point(0, baseline),
                       fontface, scale, CV_RGB(255, 0, 0), thickness, 8);
-      
-    
+
+
         }
         cv::imwrite(fileName1,img);
         bgiters++;
@@ -2046,6 +2046,31 @@ void EncodeConfPrediction(const Dtype* conf_data, const int num,
           ++count;
         }
       }
+    }else {
+      // Go to next image.
+      if (do_neg_mining) {
+        // Save negative bboxes scores and labels.
+        for (int n = 0; n < all_neg_indices[i].size(); ++n) {
+          int j = all_neg_indices[i][n];
+          CHECK_LT(j, num_priors);
+          caffe_copy<Dtype>(num_classes, conf_data + j * num_classes,
+              conf_pred_data + count * num_classes);
+          switch (conf_loss_type) {
+            case MultiBoxLossParameter_ConfLossType_SOFTMAX:
+              conf_gt_data[count] = background_label_id;
+              break;
+            case MultiBoxLossParameter_ConfLossType_LOGISTIC:
+              if (background_label_id >= 0 &&
+                  background_label_id < num_classes) {
+                conf_gt_data[count * num_classes + background_label_id] = 1;
+              }
+              break;
+            default:
+              LOG(FATAL) << "Unknown conf loss type.";
+          }
+          ++count;
+        }
+      }
     }
     if (do_neg_mining) {
       conf_data += num_priors * num_classes;
@@ -2642,7 +2667,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
               {
                fid=fopen(fileName1,"w");
                //if(fid==NULL)
-               fprintf(fid,"%s\n",imgname.c_str()); 
+               fprintf(fid,"%s\n",imgname.c_str());
                fprintf(fid,"%d\n",bboxes.size());
               }
              fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width*testimgWidth),cvRound(bboxes[j].ymin()/height*testimgHeight),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight),bboxes[j].score());
