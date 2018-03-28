@@ -1097,7 +1097,6 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
     //如果为无标签的负样本图像
     if(0==match_indices.size()&&arm_conf_data != NULL)
     {
-      LOG(INFO)<<thiscount<<" : NOLABEL";
       const vector<NormalizedBBox>& arm_loc_preds = all_arm_loc_preds[i].find(-1)->second;
       vector<NormalizedBBox> decode_prior_bboxes;
       bool clip_bbox = false;
@@ -1126,7 +1125,6 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
       for (int m = 0; m < loss_indices.size(); ++m) {
           sel_confs.push_back(loss_indices[m].first);
           sel_bboxes.push_back(loc_bboxes[loss_indices[m].second]);
-         // LOG(INFO)<<"BBOX:"<<loc_bboxes[loss_indices[m].second].xmin()<<" "<<loc_bboxes[loss_indices[m].second].ymin()<<" "<<loc_bboxes[loss_indices[m].second].xmax()<<" "<<loc_bboxes[loss_indices[m].second].ymax()<<" "<<loc_bboxes[loss_indices[m].second].label()<<" Conf: "<<loss_indices[m].first;
       }
       // Do non-maximum suppression based on the loss.
       vector<int> nms_indices;
@@ -1171,12 +1169,10 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
       for (int n = 0; n < num_sel; ++n) {
         // Update select neg_indices.
         neg_indices.push_back(loss_indices[nms_indices[n]].second);
-        LOG(INFO)<<"NEG: "<<loss_indices[nms_indices[n]].second;
         *num_negs += 1;
       }
       //LOG(INFO) <<"num_negs:"<<num_sel;
     }else{
-    LOG(INFO)<<thiscount<<" :LABEL";
     for (map<int, vector<int> >::iterator it = match_indices.begin();
          it != match_indices.end(); ++it) {
       const int label = it->first;
