@@ -1325,6 +1325,8 @@ message MultiBoxLossParameter {
 
   //the objectness score is used for the anchor refinement module to filter easy negative anchor.
   optional float objectness_score = 24 [default = 0.01];
+  optional bool visualize = 25 [default = false];
+  
 }
 
 message MVNParameter {

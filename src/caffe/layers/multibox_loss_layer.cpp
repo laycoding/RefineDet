@@ -21,7 +21,13 @@ void MultiBoxLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   const MultiBoxLossParameter& multibox_loss_param =
       this->layer_param_.multibox_loss_param();
   multibox_loss_param_ = this->layer_param_.multibox_loss_param();
-
+  visualize_ = multibox_loss_param_.visualize();
+  if(visualize_) {
+    data_transformer_.reset(
+        new DataTransformer<Dtype>(this->layer_param_.transform_param(),
+                                   this->phase_));
+    data_transformer_->InitRand();
+  }
   num_ = bottom[0]->num();
   num_priors_ = bottom[2]->height() / 4;
   // Get other parameters.
@@ -33,6 +39,7 @@ void MultiBoxLossLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   background_label_id_ = multibox_loss_param.background_label_id();
   use_difficult_gt_ = multibox_loss_param.use_difficult_gt();
   mining_type_ = multibox_loss_param.mining_type();
+  code_type_ = multibox_loss_param.code_type();
   if (multibox_loss_param.has_do_neg_mining()) {
     LOG(WARNING) << "do_neg_mining is deprecated, use mining_type instead.";
     do_neg_mining_ = multibox_loss_param.do_neg_mining();
@@ -190,11 +197,14 @@ void MultiBoxLossLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
 
   num_matches_ = 0;
   int num_negs = 0;
-  // Sample hard negative (and positive) examples based on mining type.
-  MineHardExamples(*bottom[1], all_loc_preds, all_gt_bboxes, prior_bboxes,
+  vector<cv::Mat> cv_imgs; 
+  if (visualize_) {
+    this->data_transformer_->TransformInv(bottom[6], &cv_imgs);
+   }
+    MineHardExamples(*bottom[1], all_loc_preds, all_arm_loc_preds,all_gt_bboxes, prior_bboxes,
                    prior_variances, all_match_overlaps, multibox_loss_param_,
                    &num_matches_, &num_negs, &all_match_indices_,
-                   &all_neg_indices_, arm_conf_data);
+                   &all_neg_indices_, arm_conf_data,visualize_,&cv_imgs);
 
   if (num_matches_ >= 1) {
     // Form data to pass on to loc_loss_layer_.

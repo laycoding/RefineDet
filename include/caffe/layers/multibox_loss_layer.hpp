@@ -9,7 +9,7 @@
 #include "caffe/layer.hpp"
 #include "caffe/proto/caffe.pb.h"
 #include "caffe/util/bbox_util.hpp"
-
+#include "caffe/data_transformer.hpp"
 #include "caffe/layers/loss_layer.hpp"
 
 namespace caffe {
@@ -105,6 +105,8 @@ class MultiBoxLossLayer : public LossLayer<Dtype> {
 
   // How to normalize the loss.
   LossParameter_NormalizationMode normalization_;
+  shared_ptr<DataTransformer<Dtype> > data_transformer_;
+  bool visualize_;
 };
 
 }  // namespace caffe

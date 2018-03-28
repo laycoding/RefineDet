@@ -196,6 +196,7 @@ int CountNumMatches(const vector<map<int, vector<int> > >& all_match_indices,
 template <typename Dtype>
 void MineHardExamples(const Blob<Dtype>& conf_blob,
     const vector<LabelBBox>& all_loc_preds,
+    const vector<LabelBBox>& all_arm_loc_preds,
     const map<int, vector<NormalizedBBox> >& all_gt_bboxes,
     const vector<NormalizedBBox>& prior_bboxes,
     const vector<vector<float> >& prior_variances,
@@ -204,7 +205,7 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
     int* num_matches, int* num_negs,
     vector<map<int, vector<int> > >* all_match_indices,
     vector<vector<int> >* all_neg_indices,
-	const Dtype* arm_conf_data);
+	const Dtype* arm_conf_data,bool visual=false,vector<cv::Mat>* imgs=NULL);
 
 // Retrieve bounding box ground truth from gt_data.
 //    gt_data: 1 x 1 x num_gt x 7 blob.
