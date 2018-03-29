@@ -2615,6 +2615,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
   int baseline = 0;
   char buffer[50];
   for (int i = 0; i < num_img; ++i) {
+    bool detectedObject=false;
     cv::Mat image = images[i];
     // Show FPS.
     snprintf(buffer, sizeof(buffer), "FPS: %.2f", fps);
@@ -2627,7 +2628,8 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                 fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
     // Draw bboxes.
     for (map<int, vector<NormalizedBBox> >::iterator it =
-         all_detections[i].begin(); it != all_detections[i].end(); ++it) {
+         all_detections[i].begin(); it != all_detections[i].end(); ++it)
+    {
       int label = it->first;
       string label_name = "Unknown";
       if (label_to_display_name.find(label) != label_to_display_name.end()) {
@@ -2657,79 +2659,80 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         FILE* fid=NULL;//=fopen(fileName1,"w");
         const cv::Scalar& color = colors[label];
         const vector<NormalizedBBox>& bboxes = it->second;
-        for (int j = 0; j < bboxes.size(); ++j) {
-            if(label_name=="face")
-            { if(j==0)
-              {
+        if(bboxes.size()>0) detectedObject=true;
+        for (int j = 0; j < bboxes.size(); ++j)
+        {
+            if(j==0)
+            {
                fid=fopen(fileName1,"w");
                //if(fid==NULL)
                fprintf(fid,"%s\n",imgname.c_str());
                fprintf(fid,"%d\n",bboxes.size());
-              }
-             fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width*testimgWidth),cvRound(bboxes[j].ymin()/height*testimgHeight),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight),bboxes[j].score());
             }
+            fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width*testimgWidth),cvRound(bboxes[j].ymin()/height*testimgHeight),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight),bboxes[j].score());
+
             cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
             cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
             cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
             cv::Point bottom_left_pt(bboxes[j].xmin(), bboxes[j].ymax());
-            snprintf(buffer, sizeof(buffer), "%s: %.2f", label_name.c_str(),
-                 bboxes[j].score());
+            snprintf(buffer, sizeof(buffer), "%.2f", bboxes[j].score());
             cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
                                         &baseline);
-            // cv::rectangle(
-            //     image, bottom_left_pt + cv::Point(0, 0),
-            //     bottom_left_pt + cv::Point(text.width, -text.height-baseline),
-            //     color, CV_FILLED);
-            // cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
-            //           fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
+            cv::rectangle(
+                 image, bottom_left_pt + cv::Point(0, 0),
+                 bottom_left_pt + cv::Point(text.width, -text.height-baseline),
+                 color, CV_FILLED);
+            cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
+                      fontface, scale, CV_RGB(0, 0, 0), thickness, 4);
         }
-       if(fid!=NULL)
+        if(fid!=NULL)
           fclose(fid);
       }else
       {
         CHECK_LT(label, colors.size());
         const cv::Scalar& color = colors[label];
         const vector<NormalizedBBox>& bboxes = it->second;
-        for (int j = 0; j < bboxes.size(); ++j) {
+        if(bboxes.size()>0) detectedObject=true;
+        for (int j = 0; j < bboxes.size(); ++j)
+        {
           cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
           cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
           cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
           cv::Point bottom_left_pt(bboxes[j].xmin(), bboxes[j].ymax());
-          snprintf(buffer, sizeof(buffer), "%s: %.2f", label_name.c_str(),
-                 bboxes[j].score());
+          snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
           cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
                                         &baseline);
-       // cv::rectangle(
-       //     image, bottom_left_pt + cv::Point(0, 0),
-       //     bottom_left_pt + cv::Point(text.width, -text.height-baseline),
-       //     color, CV_FILLED);
-       // cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
-         //           fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
+          cv::rectangle(
+             image, bottom_left_pt + cv::Point(0, 0),
+             bottom_left_pt + cv::Point(text.width, -text.height-baseline),
+             color, CV_FILLED);
+          cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
+                     fontface, scale, CV_RGB(0, 0, 0), thickness, 4);
       }
      }
     }
-	if(save_draw_img)
-       {
+	  if(save_draw_img&&detectedObject)
+    {
         std::ifstream infile(source.c_str());
         string line;
         size_t pos;
         int label;
-	vector<std::pair<std::string, int> > lines_;
+	      vector<std::pair<std::string, int> > lines_;
         while (std::getline(infile, line))
         {
           pos = line.find_last_of(' ');
-	  label = atoi(line.substr(pos + 1).c_str());
+	        label = atoi(line.substr(pos + 1).c_str());
           lines_.push_back(std::make_pair(line.substr(0, pos), label));
         }
-	char fileName1[1000];
+	      char fileName1[1000];
         sprintf(fileName1, "%s%s",save_dir.c_str(),lines_[count].first.c_str());
-	cv::imwrite(fileName1,image);
-       }
+	      cv::imwrite(fileName1,image);
+    }
     // Save result if required.
     //cv::imshow("detections", image);
-   // if (cv::waitKey(1) == 27) {
-   //   raise(SIGINT);
-   // }
+    // if (cv::waitKey(1) == 27) {
+    //   raise(SIGINT);
+    // }
 
     count++;
   }
