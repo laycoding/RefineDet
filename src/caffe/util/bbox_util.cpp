@@ -1114,7 +1114,7 @@ void MineHardExamples(const Blob<Dtype>& conf_blob,
       vector<pair<float, int> > loss_indices;
       for (int m = 0; m < num_priors; ++m) {
         //返回ODM网络的无label样本中高置信度负样本
-          if(arm_conf_data[i*num_priors*2+2*m+1] >= objectness_score&&std::exp(-loss[m])<nms_threshold){
+          if(arm_conf_data[i*num_priors*2+2*m+1] >= objectness_score&&std::exp(-loss[m])<1-nms_threshold){
               loss_indices.push_back(std::make_pair(1.0-std::exp(-loss[m]), m));
               ++num_sel;
         }
