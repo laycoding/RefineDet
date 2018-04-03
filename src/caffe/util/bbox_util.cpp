@@ -2670,12 +2670,17 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                         int topy=cvRound(bboxes[j].ymin()/height*testimgHeight);
                         int facewidth=cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth);
                         int faceheight=cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight);
+                        if(facewidth>=12&&faceheight>=12)
+                        {
                         fprintf(fid,"%d,%d,%d,%d,%f\n",topx,topy,facewidth,faceheight,bboxes[j].score());
                         fclose(fid);
                         cv::Rect rectroi(topx,topy,facewidth,faceheight);
                         cv::Mat copface=testimg(rectroi);
+                        cv::Mat resizeface;
+                        cv::resize(copface,resizeface,Size(48,48),0,0,INTER_CUBIC);
                         sprintf(fileName1, "%s%s_%d.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
-                        cv::imwrite(fileName1,copface);
+                        cv::imwrite(fileName1,resizeface);
+                        }
                     }
 
                   }
