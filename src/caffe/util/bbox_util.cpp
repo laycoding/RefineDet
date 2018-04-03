@@ -2677,6 +2677,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
 
                         if(facewidth>=24&&faceheight>=24)
                         {
+                          char fileName1[1000];
                           FILE* fid=fopen(fileName1,"w");
                           fprintf(fid,"%s\n",imgname.c_str(),j);
                           fprintf(fid,"%d,%d,%d,%d,%f\n",topx,topy,facewidth,faceheight,bboxes[j].score());
