@@ -2672,7 +2672,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                         int facewidth=cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth);
                         int faceheight=cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight);
                         if(topx+facewidth>=testimgWidth-1)
-                           facewidth = testimgwidth-topx;
+                           facewidth = testimgWidth-topx;
                         if(topy+faceheight>=testimgHeight-1)
                            faceheight=testimgHeight-topy;
 
