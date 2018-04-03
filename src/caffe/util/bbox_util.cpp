@@ -2626,7 +2626,60 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                   CV_RGB(255, 255, 255), CV_FILLED);
     cv::putText(image, buffer, cv::Point(0, text.height + baseline / 2.),
                 fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
-    // Draw bboxes.
+
+    //生成供MTCNN用的正样本负样本，及对对应的人脸框。
+    for (map<int, vector<NormalizedBBox> >::iterator it =
+                     all_detections[i].begin(); it != all_detections[i].end(); ++it)
+    {
+                  int label = it->first;
+                  string label_name = "Unknown";
+                  if (label_to_display_name.find(label) != label_to_display_name.end()) {
+                    label_name = label_to_display_name.find(label)->second;
+                  }
+                  if(save_txt)
+                  {
+                    std::ifstream infile(source.c_str());
+                    string line;
+                    size_t pos;
+                    int label;
+                    vector<std::pair<std::string, int> > lines_;
+                    while (std::getline(infile, line))
+                    {
+                      pos = line.find_last_of(' ');
+                      label = atoi(line.substr(pos + 1).c_str());
+                      lines_.push_back(std::make_pair(line.substr(0, pos), label));
+                    }
+
+                    string imgname=lines_[count].first;
+                    cv::Mat testimg=cv::imread(root_folder+lines_[count++].first);
+                    int testimgWidth=testimg.cols;
+                    int testimgHeight=testimg.rows;
+                    //LOG(INFO)<<fileName1;
+                    CHECK_LT(label, colors.size());
+                    const cv::Scalar& color = colors[label];
+                    const vector<NormalizedBBox>& bboxes = it->second;
+                    if(bboxes.size()>0) detectedObject=true;
+                    for (int j = 0; j < bboxes.size(); ++j)
+                    {
+                        char fileName1[1000];
+                        sprintf(fileName1, "%s%s_%d.txt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
+
+                        FILE* fid=fopen(fileName1,"w");
+                        fprintf(fid,"%s\n",imgname.c_str(),j);
+                        fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width*testimgWidth),cvRound(bboxes[j].ymin()/height*testimgHeight),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight),bboxes[j].score());
+                        fclose(fid);
+                        cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
+                        cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
+                        cv::Rect rectroi(bboxes[j].xmin(),bboxes[j].ymin(),bboxes[j].xmax()-bboxes[j].xmin(),bboxes[j].ymax()-bboxes[j].ymin());
+                        cv::Mat copface=testimg(rectroi);
+                        sprintf(fileName1, "%s%s_%d.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
+                        cv::imwrite(fileName1,copface);
+                    }
+
+                  }
+    }
+    /*
+    // 选择保存WIDERFACE的每张测试图的结果TXT，同时可选择保存结果图。
     for (map<int, vector<NormalizedBBox> >::iterator it =
          all_detections[i].begin(); it != all_detections[i].end(); ++it)
     {
@@ -2728,13 +2781,8 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         sprintf(fileName1, "%s%s",save_dir.c_str(),lines_[count].first.c_str());
 	      cv::imwrite(fileName1,image);
     }
-    // Save result if required.
-    //cv::imshow("detections", image);
-    // if (cv::waitKey(1) == 27) {
-    //   raise(SIGINT);
-    // }
-
     count++;
+    */
   }
   start_clock = clock();
 }
