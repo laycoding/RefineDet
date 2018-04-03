@@ -2671,7 +2671,12 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                         int topy=min(max(0,cvRound(bboxes[j].ymin()/height*testimgHeight)),testimgHeight-1);
                         int facewidth=cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth);
                         int faceheight=cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight);
-                        if(facewidth>=12&&faceheight>=12)
+                        if(topx+facewidth>=testimgWidth-1)
+                           facewidth = testimgwidth-topx;
+                        if(topy+faceheight>=testimgHeight-1)
+                           faceheight=testimgHeight-topy;
+
+                        if(facewidth>=24&&faceheight>=24)
                         {
                         fprintf(fid,"%d,%d,%d,%d,%f\n",topx,topy,facewidth,faceheight,bboxes[j].score());
                         fclose(fid);
