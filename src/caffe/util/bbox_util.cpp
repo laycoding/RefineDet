@@ -2662,8 +2662,9 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                     if(bboxes.size()>0) detectedObject=true;
                     for (int j = 0; j < bboxes.size(); ++j)
                     {
-                        char fileName1[1000];
-                        sprintf(fileName1, "%s%s_%d.txt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
+                        cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
+                        cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
+                        cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
 
                         int topx=min(max(0,cvRound(bboxes[j].xmin()/width*testimgWidth)),testimgWidth-1);
                         int topy=min(max(0,cvRound(bboxes[j].ymin()/height*testimgHeight)),testimgHeight-1);
@@ -2693,6 +2694,9 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                     char fileName2[1000];
                     sprintf(fileName2, "%s%s.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
                     cv::imwrite(fileName2,testimg);
+                    sprintf(fileName2, "%s%s_ori.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+                    cv::imwrite(fileName2,image);
+
                   }
     }
     /*
