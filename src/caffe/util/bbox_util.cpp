@@ -2666,11 +2666,13 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
 
                         FILE* fid=fopen(fileName1,"w");
                         fprintf(fid,"%s\n",imgname.c_str(),j);
-                        fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width*testimgWidth),cvRound(bboxes[j].ymin()/height*testimgHeight),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight),bboxes[j].score());
+                        int topx=cvRound(bboxes[j].xmin()/width*testimgWidth;
+                        int topy=cvRound(bboxes[j].ymin()/height*testimgHeight;
+                        int facewidth=cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth);
+                        int faceheight=cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight);
+                        fprintf(fid,"%d,%d,%d,%d,%f\n",topx,topy,facewidth,faceheight,bboxes[j].score());
                         fclose(fid);
-                        cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
-                        cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
-                        cv::Rect rectroi(bboxes[j].xmin(),bboxes[j].ymin(),bboxes[j].xmax()-bboxes[j].xmin(),bboxes[j].ymax()-bboxes[j].ymin());
+                        cv::Rect rectroi(topx,topy,facewidth,faceheight);
                         cv::Mat copface=testimg(rectroi);
                         sprintf(fileName1, "%s%s_%d.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
                         cv::imwrite(fileName1,copface);
