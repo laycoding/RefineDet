@@ -11,7 +11,8 @@
 #include "boost/iterator/counting_iterator.hpp"
 
 #include "caffe/util/bbox_util.hpp"
-
+#include<algorithm>
+using namespace std;
 namespace caffe {
 
 bool SortBBoxAscend(const NormalizedBBox& bbox1, const NormalizedBBox& bbox2) {
