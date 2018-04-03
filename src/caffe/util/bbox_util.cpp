@@ -2666,10 +2666,10 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                         cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
                         cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
 
-                        int topx=min(max(0,cvRound(bboxes[j].xmin()/width*testimgWidth)),testimgWidth-1);
-                        int topy=min(max(0,cvRound(bboxes[j].ymin()/height*testimgHeight)),testimgHeight-1);
-                        int facewidth=cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth);
-                        int faceheight=cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight);
+                        int topx=min(max(0,cvRound(float(bboxes[j].xmin())/width*testimgWidth)),testimgWidth-1);
+                        int topy=min(max(0,cvRound(float(bboxes[j].ymin())/height*testimgHeight)),testimgHeight-1);
+                        int facewidth=cvRound(float(bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth);
+                        int faceheight=cvRound(float(bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight);
                         if(topx+facewidth>=testimgWidth-1)
                            facewidth = testimgWidth-topx;
                         if(topy+faceheight>=testimgHeight-1)
