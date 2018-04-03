@@ -2692,7 +2692,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                     }
                     char fileName2[1000];
                     sprintf(fileName2, "%s%s.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
-                    cv::imwrite(fileName1,testimg);
+                    cv::imwrite(fileName2,testimg);
                   }
     }
     /*
