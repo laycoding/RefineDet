@@ -2665,8 +2665,6 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                         char fileName1[1000];
                         sprintf(fileName1, "%s%s_%d.txt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
 
-                        FILE* fid=fopen(fileName1,"w");
-                        fprintf(fid,"%s\n",imgname.c_str(),j);
                         int topx=min(max(0,cvRound(bboxes[j].xmin()/width*testimgWidth)),testimgWidth-1);
                         int topy=min(max(0,cvRound(bboxes[j].ymin()/height*testimgHeight)),testimgHeight-1);
                         int facewidth=cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth);
@@ -2678,17 +2676,22 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
 
                         if(facewidth>=24&&faceheight>=24)
                         {
-                        fprintf(fid,"%d,%d,%d,%d,%f\n",topx,topy,facewidth,faceheight,bboxes[j].score());
-                        fclose(fid);
-                        cv::Rect rectroi(topx,topy,facewidth,faceheight);
-                        cv::Mat copface=testimg(rectroi);
-                        cv::Mat resizeface;
-                        cv::resize(copface,resizeface,cv::Size(48,48),0,0,cv::INTER_CUBIC);
-                        sprintf(fileName1, "%s%s_%d.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
-                        cv::imwrite(fileName1,resizeface);
-                        }
-                    }
+                          FILE* fid=fopen(fileName1,"w");
+                          fprintf(fid,"%s\n",imgname.c_str(),j);
+                          fprintf(fid,"%d,%d,%d,%d,%f\n",topx,topy,facewidth,faceheight,bboxes[j].score());
+                          fclose(fid);
+                          cv::Rect rectroi(topx,topy,facewidth,faceheight);
+                          cv::Mat copface=testimg(rectroi);
+                          cv::Mat resizeface;
+                          cv::resize(copface,resizeface,cv::Size(48,48),0,0,cv::INTER_CUBIC);
+                          sprintf(fileName1, "%s%s_%d.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
+                          cv::imwrite(fileName1,resizeface);
 
+                        }
+                        cv::rectangle(testimg, cv::Point(topx,topy), cv::Point(topx+facewidth,topy+faceheight), cv::Scalar(0,255,0), 4);
+                    }
+                    sprintf(fileName1, "%s%s.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+                    cv::imwrite(fileName1,resizeface);
                   }
     }
     /*
