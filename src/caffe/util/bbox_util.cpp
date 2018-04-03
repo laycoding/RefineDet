@@ -2652,7 +2652,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                     }
 
                     string imgname=lines_[count].first;
-                    cv::Mat testimg=cv::imread(root_folder+lines_[count++].first);
+                    cv::Mat testimg=cv::imread(root_folder+lines_[count].first);
                     int testimgWidth=testimg.cols;
                     int testimgHeight=testimg.rows;
                     //LOG(INFO)<<fileName1;
@@ -2701,6 +2701,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
 
                   }
     }
+    count++;
     /*
     // 选择保存WIDERFACE的每张测试图的结果TXT，同时可选择保存结果图。
     for (map<int, vector<NormalizedBBox> >::iterator it =
