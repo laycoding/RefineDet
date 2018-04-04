@@ -2693,11 +2693,15 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                           cv::rectangle(showimg, cv::Point(topx,topy), cv::Point(topx+facewidth,topy+faceheight), color, 4);
                         }
                     }
-                    char fileName2[1000];
-                    sprintf(fileName2, "%s%s_0.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
-                    cv::imwrite(fileName2,showimg);
-                    //sprintf(fileName2, "%s%s_ori.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
-                    //cv::imwrite(fileName2,image);
+                    if(save_draw_img)
+                    {
+                      char fileName2[1000];
+                      sprintf(fileName2, "%s%s_0.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+                      LOG(INFO)<<fileName2<<" "<<showimg.rows<<" "<<showimg.cols;
+                      cv::imwrite(fileName2,showimg);
+                      //sprintf(fileName2, "%s%s_ori.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+                      //cv::imwrite(fileName2,image);
+                    }
 
                   }
     }
