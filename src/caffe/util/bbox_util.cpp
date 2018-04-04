@@ -2678,9 +2678,9 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                         if(facewidth>=24&&faceheight>=24)
                         {
                           char fileName1[1000];
-                          sprintf(fileName1, "%s%s.txt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+                          sprintf(fileName1, "%s%s_%d.txt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str()),j;
                           FILE* fid=fopen(fileName1,"w");
-                          fprintf(fid,"%s\n",imgname.c_str(),j);
+                          //fprintf(fid,"%s\n",imgname.c_str(),j);
                           fprintf(fid,"%d,%d,%d,%d,%f\n",topx,topy,facewidth,faceheight,bboxes[j].score());
                           fclose(fid);
                           cv::Rect rectroi(topx,topy,facewidth,faceheight);
@@ -2692,11 +2692,11 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
 
                         }
                     }
-                    char fileName2[1000];
+                    //char fileName2[1000];
                     //sprintf(fileName2, "%s%s.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
                     //cv::imwrite(fileName2,testimg);
-                    sprintf(fileName2, "%s%s_ori.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
-                    cv::imwrite(fileName2,image);
+                    //sprintf(fileName2, "%s%s_ori.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+                    //cv::imwrite(fileName2,image);
 
                   }
     }
