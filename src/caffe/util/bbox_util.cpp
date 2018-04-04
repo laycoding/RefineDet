@@ -2688,7 +2688,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                           cv::Mat copface=testimg(rectroi);
                           cv::Mat resizeface;
                           cv::resize(copface,resizeface,cv::Size(48,48),0,0,cv::INTER_CUBIC);
-                          sprintf(fileName1, "%s%f%s_%d.jpg",save_dir.c_str(),bboxes[j].score(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j+1);
+                          sprintf(fileName1, "%s%f_%s_%d.jpg",save_dir.c_str(),bboxes[j].score(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j+1);
                           cv::imwrite(fileName1,resizeface);
                           cv::rectangle(showimg, cv::Point(topx,topy), cv::Point(topx+facewidth,topy+faceheight), color, 4);
                         }
@@ -2697,7 +2697,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                     {
                       char fileName2[1000];
                       sprintf(fileName2, "%s%s_0.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
-                      LOG(INFO)<<fileName2<<" "<<showimg.rows<<" "<<showimg.cols;
+                      //LOG(INFO)<<fileName2<<" "<<showimg.rows<<" "<<showimg.cols;
                       cv::imwrite(fileName2,showimg);
                       //sprintf(fileName2, "%s%s_ori.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
                       //cv::imwrite(fileName2,image);
