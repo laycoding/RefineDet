@@ -1,6 +1,7 @@
 #include <vector>
 #include "caffe/layers/depthwise_conv_layer.hpp"
 #include <algorithm>
+#include "caffe/util/math_functions.hpp"
 namespace caffe {
 
 template <typename Dtype>
