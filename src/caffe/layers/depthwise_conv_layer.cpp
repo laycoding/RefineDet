@@ -80,6 +80,7 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
                 aveval += bottom_slice[hh * width_ + ww]*weight_slice[(khstart+hh-hstart) * kernel_w_ + (kwstart+ww-wstart)];
               }
             }
+            LOG(INFO)<<aveval<<" ";
            if(bias_term_)
            {
              const Dtype* const bias=this->blobs_[1]->cpu_data();
