@@ -193,7 +193,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        string det_arm_loc  = "/workspace/run/test/Det_arm_loc_cpu.txt";
 
        FILE* fid=fopen(det_odm_loc.c_str(),"w");
-       const Dtype* tmp=bottom[0]->cpu_data()
+       const Dtype* tmp=bottom[0]->cpu_data();
        for(int ii=0;ii<bottom[0]->count();ii++)
        {
          fpintf(fid,"%.3f ",tmp[ii]);
@@ -201,7 +201,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        fclose(fid);
 
        fid=fopen(det_odm_conf.c_str(),"w");
-       tmp=bottom[1]->cpu_data()
+       tmp=bottom[1]->cpu_data();
        for(int ii=0;ii<bottom[1]->count();ii++)
        {
          fpintf(fid,"%.3f ",tmp[ii]);
@@ -209,7 +209,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        fclose(fid);
 
        fid=fopen(det_arm_prior.c_str(),"w");
-       tmp=bottom[2]->cpu_data()
+       tmp=bottom[2]->cpu_data();
        for(int ii=0;ii<bottom[2]->count();ii++)
        {
          fpintf(fid,"%.3f ",tmp[ii]);
@@ -217,7 +217,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        fclose(fid);
 
        fid=fopen(det_arm_conf.c_str(),"w");
-       tmp=bottom[3]->cpu_data()
+       tmp=bottom[3]->cpu_data();
        for(int ii=0;ii<bottom[3]->count();ii++)
        {
          fpintf(fid,"%.3f ",tmp[ii]);
@@ -225,7 +225,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        fclose(fid);
 
        fid=fopen(det_arm_loc.c_str(),"w");
-       tmp=bottom[4]->cpu_data()
+       tmp=bottom[4]->cpu_data();
        for(int ii=0;ii<bottom[4]->count();ii++)
        {
          fpintf(fid,"%.3f ",tmp[ii]);
