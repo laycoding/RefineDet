@@ -58,28 +58,36 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
        {
          for (int w = 0; w < width_; ++w)
          {
-           const Dtype* weight_data = weight + c * kernel_h_ * kernel_w_;
+           const Dtype* weight_data = weight + c * kernel_h_ * kernel_w_
+           const Dtype* const bottom_slice = bottom_data + (n * channels_ + c) * height_ * width_;
            Dtype value = 0;
-           for (int kh = 0; kh < kernel_h_; ++kh)
-           {
-             for (int kw = 0; kw < kernel_w_; ++kw)
-              {
-               int h_in = -pad_h_ + h * stride_h_ ;//+ kh * dilation_h_;
-               int w_in = -pad_w_ + w * stride_w_ ;//+ kw * dilation_w_;
-               if ((h_in >= 0) && (h_in < height_) && (w_in >= 0) && (w_in < width_))
-               {
-                 int offset = ((n * channels_ + c) * height_ + h_in) * width_ + w_in;
-                 value += (*weight_data) * bottom_data[offset];
-               }
-               ++weight_data;
-             }
-           }
+           int hstart = h * stride_h - pad_h;
+           int wstart = w * stride_w - pad_w;
+           int hend = min(hstart + kernel_h, height_ + pad_h);
+           int wend = min(wstart + kernel_w, width_ + pad_w);
+           hstart = max(hstart, 0);
+           wstart = max(wstart, 0);
+           hend = min(hend, height_);
+           wend = min(wend, width_);
+           Dtype aveval = 0;
+           const Dtype* const bottom_slice =
+           bottom_data + (n * channels_ + c) * height_ * width_;
+           const Dtype* const weight_slice =
+           weight + c * kernel_h_ * kernel_w_;
+
+           int khstart=hend<kernel_h_?kernel_h_-hend:0;
+           int kwstart=wend<kernel_w_?kernel_w_-wend:0;
+           for (int h = hstart; h < hend; ++h) {
+            for (int w = wstart; w < wend; ++w) {
+                aveval += bottom_slice[h * width_ + w]*weight_slice[(khstart+h-hstart) * kernel_w + (kwstart+w-wstart)];
+              }
+            }
            if(bias_term_)
            {
              const Dtype* const bias=this->blobs_[1]->cpu_data();
-             *top_data++ = (value+bias[c]);
+             *top_data++ = (aveval+bias[c]);
            }else{
-            *top_data++ = value;
+            *top_data++ = aveval;
            }
         }
       }
