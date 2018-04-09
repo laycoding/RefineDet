@@ -33,6 +33,7 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 	for (int i = 0; i < bottom.size(); ++i)
   {
 		const Dtype* bottom_data = bottom[i]->cpu_data();
+    LOG(INFO)<<bottom_data[0]<<" "<< bottom_data[1];
 		Dtype* top_data = top[i]->mutable_cpu_data();
 		vector<int> shape_ = bottom[i]->shape();
 		const int channels_ = shape_[1];
