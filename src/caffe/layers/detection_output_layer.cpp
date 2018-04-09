@@ -196,7 +196,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        const Dtype* tmp=bottom[0]->cpu_data();
        for(int ii=0;ii<bottom[0]->count();ii++)
        {
-         fpintf(fid,"%.3f ",tmp[ii]);
+         fprintf(fid,"%.3f ",tmp[ii]);
        }
        fclose(fid);
 
@@ -204,7 +204,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        tmp=bottom[1]->cpu_data();
        for(int ii=0;ii<bottom[1]->count();ii++)
        {
-         fpintf(fid,"%.3f ",tmp[ii]);
+         fprintf(fid,"%.3f ",tmp[ii]);
        }
        fclose(fid);
 
@@ -212,7 +212,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        tmp=bottom[2]->cpu_data();
        for(int ii=0;ii<bottom[2]->count();ii++)
        {
-         fpintf(fid,"%.3f ",tmp[ii]);
+         fprintf(fid,"%.3f ",tmp[ii]);
        }
        fclose(fid);
 
@@ -220,7 +220,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        tmp=bottom[3]->cpu_data();
        for(int ii=0;ii<bottom[3]->count();ii++)
        {
-         fpintf(fid,"%.3f ",tmp[ii]);
+         fprintf(fid,"%.3f ",tmp[ii]);
        }
        fclose(fid);
 
@@ -228,7 +228,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
        tmp=bottom[4]->cpu_data();
        for(int ii=0;ii<bottom[4]->count();ii++)
        {
-         fpintf(fid,"%.3f ",tmp[ii]);
+         fprintf(fid,"%.3f ",tmp[ii]);
        }
        fclose(fid);
 
