@@ -192,7 +192,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
   const Dtype* arm_loc_data = NULL;
   const int num = bottom[0]->num();
   vector<LabelBBox> all_arm_loc_preds;
-  if (bottom.size() >= 5){
+  if (bottom.size() >= 4){
 	arm_conf_data = bottom[3]->cpu_data();
   }
   if (bottom.size() >= 5){
@@ -489,11 +489,17 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
   }
   if (visualize_) {
 #ifdef USE_OPENCV
-    vector<cv::Mat> cv_imgs;
-    this->data_transformer_->TransformInv(bottom[3], &cv_imgs);
-    vector<cv::Scalar> colors = GetColors(label_to_display_name_.size());
-    VisualizeBBox(cv_imgs, top[0], visualize_threshold_, colors,
-        label_to_display_name_, save_file_);
+     vector<cv::Mat> cv_imgs;
+     this->data_transformer_->TransformInv(bottom[5], &cv_imgs);
+     vector<cv::Scalar> colors;// = GetColors(label_to_display_name_.size());
+     colors.push_back(cv::Scalar(255,0,0));
+     colors.push_back(cv::Scalar(0,255,0));
+     colors.push_back(cv::Scalar(0,0,255));
+     colors.push_back(cv::Scalar(255,255,0));
+     colors.push_back(cv::Scalar(255,0,255));
+     colors.push_back(cv::Scalar(0,255,255));
+      VisualizeBBox(cv_imgs, top[0], visualize_threshold_, colors,
+        label_to_display_name_, save_file_,source_,root_folder_,save_txt_,save_draw_img_,save_dir_);
 #endif  // USE_OPENCV
   }
 }
