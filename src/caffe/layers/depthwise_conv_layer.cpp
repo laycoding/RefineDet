@@ -23,7 +23,6 @@ void DepthwiseConvolutionLayer<Dtype>::compute_output_shape() {
 template <typename Dtype>
 void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
-        template<typename Dtype>
 	const Dtype* weight = this->blobs_[0]->cpu_data();
 	int* kernel_shape_data = this->kernel_shape_.mutable_cpu_data();
 	int* stride_data = this->stride_.mutable_cpu_data();
