@@ -71,9 +71,9 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 
            int khstart=hend<kernel_h_?kernel_h_-hend:0;
            int kwstart=wend<kernel_w_?kernel_w_-wend:0;
-           for (int h = hstart; h < hend; ++h) {
-            for (int w = wstart; w < wend; ++w) {
-                aveval += bottom_slice[h * width_ + w]*weight_slice[(khstart+h-hstart) * kernel_w_ + (kwstart+w-wstart)];
+           for (int hh = hstart; hh < hend; ++hh) {
+            for (int ww = wstart; ww < wend; ++ww) {
+                aveval += bottom_slice[hh * width_ + ww]*weight_slice[(khstart+hh-hstart) * kernel_w_ + (kwstart+ww-wstart)];
               }
             }
            if(bias_term_)
