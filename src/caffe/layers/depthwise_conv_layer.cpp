@@ -69,7 +69,7 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
                int w_in = -pad_w_ + w * stride_w_ ;//+ kw * dilation_w_;
                if ((h_in >= 0) && (h_in < height_) && (w_in >= 0) && (w_in < width_))
                {
-                 int offset = ((n * channels + c) * height_ + h_in) * width_ + w_in;
+                 int offset = ((n * channels_ + c) * height_ + h_in) * width_ + w_in;
                  value += (*weight_data) * bottom_data[offset];
                }
                ++weight_data;
