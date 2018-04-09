@@ -29,6 +29,7 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 	int* stride_data = this->stride_.mutable_cpu_data();
 	int* pad_data = this->pad_.mutable_cpu_data();
 
+
 	for (int i = 0; i < bottom.size(); ++i)
   {
 		const Dtype* bottom_data = bottom[i]->cpu_data();
@@ -47,14 +48,16 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
     const int  num_ = bottom[i]->num();
     LOG(INFO)<<"size: "<<bottom.size()<<"num:"<<num_<<" channels_: "<<channels_<<" height_: "<<height_<<" width_: "<<width_<<" kernel_h_: "<<kernel_h_<<" kernel_w_: "<<kernel_w_<<" stride_h_: "<<stride_h_<<" stride_w_: "<<stride_w_<<" pad_h_: "<<pad_h_<<" pad_w_: "<<pad_w_;
 		const bool bias_term_ = this->bias_term_;
+    const int conved_height = this->output_shape_[0];
+		const int conved_weight = this->output_shape_[1];
 
     for (int n = 0; n < num_; ++n)
     {
      for (int c = 0; c < channels_; ++c)
      {
-       for (int h = 0; h < height_; ++h)
+       for (int h = 0; h < conved_height; ++h)
        {
-         for (int w = 0; w < width_; ++w)
+         for (int w = 0; w < conved_weight; ++w)
          {
            int hstart = h * stride_h_ - pad_h_;
            int wstart = w * stride_w_ - pad_w_;
@@ -80,9 +83,9 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
            if(bias_term_)
            {
              const Dtype* const bias=this->blobs_[1]->cpu_data();
-             *top_data++ = (aveval+bias[c]);
+             *(top_data++) = (aveval+bias[c]);
            }else{
-            *top_data++ = aveval;
+             *(top_data++) = aveval;
            }
         }
       }
