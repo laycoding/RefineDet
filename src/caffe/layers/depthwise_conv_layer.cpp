@@ -55,7 +55,6 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
        {
          for (int w = 0; w < width_; ++w)
          {
-           const Dtype* const bottom_slice = bottom_data + (n * channels_ + c) * height_ * width_;
            int hstart = h * stride_h_ - pad_h_;
            int wstart = w * stride_w_ - pad_w_;
            int hend = std::min(hstart + kernel_h_, height_ + pad_h_);
