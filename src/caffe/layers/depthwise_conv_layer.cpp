@@ -44,9 +44,10 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 		const int stride_w_ = stride_data[1];
 		const int pad_h_ = pad_data[0];
 		const int pad_w_ = pad_data[1];
-    LOG(INFO)<<"channels_: "<<channels_<<"height_: "<<height_<<"width_: "<<width_<<"kernel_h_: "<<kernel_h_<<"kernel_w_: "<<kernel_w_<<"stride_h_: "<<stride_h_<<"stride_w_: "<<stride_w_<<"pad_h_: "<<pad_h_<<"pad_w_: "<<pad_w_;
-		const bool bias_term_ = this->bias_term_;
     const int  num_ = bottom[i]->num();
+    LOG(INFO)<<"size: "<<bottom.size()<<"num:"<<num_<<" channels_: "<<channels_<<" height_: "<<height_<<" width_: "<<width_<<" kernel_h_: "<<kernel_h_<<" kernel_w_: "<<kernel_w_<<" stride_h_: "<<stride_h_<<" stride_w_: "<<stride_w_<<" pad_h_: "<<pad_h_<<" pad_w_: "<<pad_w_;
+		const bool bias_term_ = this->bias_term_;
+
     for (int n = 0; n < num_; ++n)
     {
      for (int c = 0; c < channels_; ++c)
