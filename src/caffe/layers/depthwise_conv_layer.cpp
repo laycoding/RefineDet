@@ -2,7 +2,6 @@
 #include "caffe/layers/depthwise_conv_layer.hpp"
 
 namespace caffe {
-
 template <typename Dtype>
 void DepthwiseConvolutionLayer<Dtype>::compute_output_shape() {
   const int* kernel_shape_data = this->kernel_shape_.cpu_data();

@@ -20,51 +20,6 @@ namespace caffe {
 template <typename Dtype>
 void DetectionOutputLayer<Dtype>::Forward_gpu(
     const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top) {
-  string det_odm_loc = "/workspace/run/test/Det_odm_loc.txt";
-  string det_odm_conf = "/workspace/run/test/Det_odm_conf.txt";
-  string det_arm_prior= "/workspace/run/test/Det_arm_prior.txt";
-  string det_arm_conf = "/workspace/run/test/Det_arm_conf.txt";
-  string det_arm_loc  = "/workspace/run/test/Det_arm_loc.txt";
-
-  FILE* fid=fopen(det_odm_loc.c_str(),"w");
-  const Dtype* tmp=bottom[0]->cpu_data();
-  for(int ii=0;ii<bottom[0]->count();ii++)
-  {
-    fprintf(fid,"%.3f ",tmp[ii]);
-  }
-  fclose(fid);
-
-  fid=fopen(det_odm_conf.c_str(),"w");
-  tmp=bottom[1]->cpu_data();
-  for(int ii=0;ii<bottom[1]->count();ii++)
-  {
-    fprintf(fid,"%.3f ",tmp[ii]);
-  }
-  fclose(fid);
-
-  fid=fopen(det_arm_prior.c_str(),"w");
-  tmp=bottom[2]->cpu_data();
-  for(int ii=0;ii<bottom[2]->count();ii++)
-  {
-    fprintf(fid,"%.3f ",tmp[ii]);
-  }
-  fclose(fid);
-
-  fid=fopen(det_arm_conf.c_str(),"w");
-  tmp=bottom[3]->cpu_data();
-  for(int ii=0;ii<bottom[3]->count();ii++)
-  {
-    fprintf(fid,"%.3f ",tmp[ii]);
-  }
-  fclose(fid);
-
-  fid=fopen(det_arm_loc.c_str(),"w");
-  tmp=bottom[4]->cpu_data();
-  for(int ii=0;ii<bottom[4]->count();ii++)
-  {
-    fprintf(fid,"%.3f ",tmp[ii]);
-  }
-  fclose(fid);
 
   const Dtype* loc_data = bottom[0]->gpu_data();
   const Dtype* prior_data = bottom[2]->gpu_data();
