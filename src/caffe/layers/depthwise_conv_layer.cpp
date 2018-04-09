@@ -2,141 +2,6 @@
 #include "caffe/layers/depthwise_conv_layer.hpp"
 
 namespace caffe {
-  template <typename Dtype>
-void DepthwiseConvolutionLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top) {
-  ConvolutionParameter conv_param = this->layer_param_.convolution_param();
-  if (conv_param.has_kernel_h() && conv_param.has_kernel_w()) {
-    kernel_h_ = conv_param.kernel_h();
-    kernel_w_ = conv_param.kernel_w();
-  } else {
-    if (conv_param.kernel_size_size() == 1)
-    {
-      kernel_h_ = conv_param.kernel_size(0);
-      kernel_w_ = conv_param.kernel_size(0);
-    }
-    else
-    {
-      kernel_h_ = conv_param.kernel_size(0);
-      kernel_w_ = conv_param.kernel_size(1);
-    }
-  }
-  if (conv_param.has_stride_h() && conv_param.has_stride_w()) {
-    stride_h_ = conv_param.stride_h();
-    stride_w_ = conv_param.stride_w();
-  } else {
-    if (conv_param.stride_size() == 1)
-    {
-      stride_h_ = conv_param.stride(0);
-      stride_w_ = conv_param.stride(0);
-    }
-    else
-    {
-      stride_h_ = conv_param.stride(0);
-      stride_w_ = conv_param.stride(1);
-    }
-  }
-  if (conv_param.has_pad_h() && conv_param.has_pad_w()) {
-    pad_h_ = conv_param.pad_h();
-    pad_w_ = conv_param.pad_w();
-  } else {
-    if (conv_param.pad_size() == 1)
-    {
-      pad_h_ = conv_param.pad(0);
-      pad_w_ = conv_param.pad(0);
-    }
-    else
-    {
-      pad_h_ = conv_param.pad(0);
-      pad_w_ = conv_param.pad(1);
-    }
-  }
-  if (conv_param.dilation_size() > 0)
-  {
-    if (conv_param.dilation_size() == 1)
-    {
-      dilation_h_ = conv_param.dilation(0);
-      dilation_w_ = conv_param.dilation(0);
-    }
-    else
-    {
-      dilation_h_ = conv_param.dilation(0);
-      dilation_w_ = conv_param.dilation(1);
-    }
-  }
-  else
-  {
-    dilation_h_ = 1;
-    dilation_w_ = 1;
-  }
-  vector<int> weight_shape(4);
-  weight_shape[0] = bottom[0]->channels();
-  weight_shape[1] = 1;
-  weight_shape[2] = kernel_h_;
-  weight_shape[3] = kernel_w_;
-  vector<int> bias_shape;
-  if (conv_param.bias_term())
-  {
-    bias_shape.push_back(bottom[0]->channels());
-  }
-  if (this->blobs_.size() == 0) {
-    if (conv_param.bias_term()) {
-      this->blobs_.resize(2);
-    } else {
-      this->blobs_.resize(1);
-    }
-    this->blobs_[0].reset(new Blob<Dtype>(weight_shape));
-    shared_ptr<Filler<Dtype> > weight_filler(GetFiller<Dtype>(conv_param.weight_filler()));
-    weight_filler->Fill(this->blobs_[0].get());
-    if (conv_param.bias_term()) {
-      this->blobs_[1].reset(new Blob<Dtype>(bias_shape));
-      shared_ptr<Filler<Dtype> > bias_filler(GetFiller<Dtype>(conv_param.bias_filler()));
-      bias_filler->Fill(this->blobs_[1].get());
-    }
-  }
-  this->param_propagate_down_.resize(this->blobs_.size(), true);
-}
-
-template <typename Dtype>
-void DepthwiseConvolutionLayer<Dtype>::Reshape(const vector<Blob<Dtype>*>& bottom,
-      const vector<Blob<Dtype>*>& top) {
-  vector<int> top_shape;
-  top_shape.push_back(bottom[0]->num());
-  top_shape.push_back(bottom[0]->channels());
-  top_shape.push_back((bottom[0]->height() + 2 * pad_h_ - (dilation_h_ * (kernel_h_ - 1) + 1)) / stride_h_ + 1);
-  top_shape.push_back((bottom[0]->width() + 2 * pad_w_ - (dilation_w_ * (kernel_w_ - 1) + 1)) / stride_w_ + 1);
-  top[0]->Reshape(top_shape);
-  vector<int> weight_buffer_shape;
-  weight_buffer_shape.push_back(bottom[0]->channels());
-  weight_buffer_shape.push_back(kernel_h_);
-  weight_buffer_shape.push_back(kernel_w_);
-  weight_buffer_shape.push_back(bottom[0]->num());
-  weight_buffer_shape.push_back(top[0]->height());
-  weight_buffer_shape.push_back(top[0]->width());
-  weight_buffer_.Reshape(weight_buffer_shape);
-  vector<int> weight_multiplier_shape;
-  weight_multiplier_shape.push_back(bottom[0]->num());
-  weight_multiplier_shape.push_back(top[0]->height());
-  weight_multiplier_shape.push_back(top[0]->width());
-  weight_multiplier_.Reshape(weight_multiplier_shape);
-  caffe_gpu_set(weight_multiplier_.count(), Dtype(1), weight_multiplier_.mutable_gpu_data());
-  if (this->layer_param_.convolution_param().bias_term())
-  {
-    vector<int> bias_buffer_shape;
-    bias_buffer_shape.push_back(bottom[0]->channels());
-    bias_buffer_shape.push_back(bottom[0]->num());
-    bias_buffer_shape.push_back(top[0]->height());
-    bias_buffer_shape.push_back(top[0]->width());
-    bias_buffer_.Reshape(bias_buffer_shape);
-    vector<int> bias_multiplier_shape;
-    bias_multiplier_shape.push_back(bottom[0]->num());
-    bias_multiplier_shape.push_back(top[0]->height());
-    bias_multiplier_shape.push_back(top[0]->width());
-    bias_multiplier_.Reshape(bias_multiplier_shape);
-    caffe_gpu_set(bias_multiplier_.count(), Dtype(1), bias_multiplier_.mutable_gpu_data());
-  }
-}
-
 
 template <typename Dtype>
 void DepthwiseConvolutionLayer<Dtype>::compute_output_shape() {
@@ -158,19 +23,72 @@ void DepthwiseConvolutionLayer<Dtype>::compute_output_shape() {
 template <typename Dtype>
 void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& bottom,
       const vector<Blob<Dtype>*>& top) {
+        template<typename Dtype>
 	const Dtype* weight = this->blobs_[0]->cpu_data();
-  for (int i = 0; i < bottom.size(); ++i) {
-    const Dtype* bottom_data = bottom[i]->cpu_data();
-    Dtype* top_data = top[i]->mutable_cpu_data();
-    for (int n = 0; n < this->num_; ++n) {
-      this->forward_cpu_gemm(bottom_data + n * this->bottom_dim_, weight,
-          top_data + n * this->top_dim_);
-      if (this->bias_term_) {
-        const Dtype* bias = this->blobs_[1]->cpu_data();
-        this->forward_cpu_bias(top_data + n * this->top_dim_, bias);
+	int* kernel_shape_data = this->kernel_shape_.mutable_cpu_data();
+	int* stride_data = this->stride_.mutable_cpu_data();
+	int* pad_data = this->pad_.mutable_cpu_data();
+
+	for (int i = 0; i < bottom.size(); ++i) 
+  {
+		const Dtype* bottom_data = bottom[i]->cpu_data();
+		Dtype* top_data = top[i]->mutable_cpu_data();
+		const int count = top[i]->count();
+		vector<int> shape_ = bottom[i]->shape();
+		const int channels_ = shape_[1];
+		const int height_ = shape_[2];
+		const int width_ = shape_[3];
+
+		const int kernel_h_ = kernel_shape_data[0];
+		const int kernel_w_ = kernel_shape_data[1];
+		const int stride_h_ = stride_data[0];
+		const int stride_w_ = stride_data[1];
+		const int pad_h_ = pad_data[0];
+		const int pad_w_ = pad_data[1];
+
+		const int conved_height = this->output_shape_[0];
+		const int conved_weight = this->output_shape_[1];
+
+		const bool bias_term_ = this->bias_term_;
+    const Dtype* const bias = NULL;
+    if(bias_term_)
+       bias=this->blobs_[1]->cpu_data();
+    const int  num_ = bottom[i]->num();
+    for (int n = 0; n < num_; ++n)
+    {
+     for (int c = 0; c < channels_; ++c)
+     {
+       for (int h = 0; h < height_; ++h)
+       {
+         for (int w = 0; w < width_; ++w)
+         {
+           const Dtype* weight_data = weight + c * kernel_h_ * kernel_w_;
+           Dtype value = 0;
+           for (int kh = 0; kh < kernel_h_; ++kh)
+           {
+             for (int kw = 0; kw < kernel_w_; ++kw)
+              {
+               int h_in = -pad_h_ + h * stride_h_ ;//+ kh * dilation_h_;
+               int w_in = -pad_w_ + w * stride_w_ ;//+ kw * dilation_w_;
+               if ((h_in >= 0) && (h_in < height_) && (w_in >= 0) && (w_in < width_))
+               {
+                 int offset = ((n * channels + c) * height_ + h_in) * width_ + w_in;
+                 value += (*weight_data) * bottom_data[offset];
+               }
+               ++weight_data;
+             }
+           }
+           if(bias_term_)
+           {
+             *top_data++ = (value+bias[c];
+           }else{
+            *top_data++ = value;
+           }
+        }
       }
     }
-  }
+   }
+ }
 }
 
 template <typename Dtype>

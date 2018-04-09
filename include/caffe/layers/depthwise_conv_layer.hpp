@@ -72,10 +72,7 @@ class DepthwiseConvolutionLayer : public BaseConvolutionLayer<Dtype> {
    */
   explicit DepthwiseConvolutionLayer(const LayerParameter& param)
       : BaseConvolutionLayer<Dtype>(param) {}
-      virtual void LayerSetUp(const vector<Blob<Dtype>*>& bottom,
-          const vector<Blob<Dtype>*>& top);
-      virtual void Reshape(const vector<Blob<Dtype>*>& bottom,
-          const vector<Blob<Dtype>*>& top);
+
   virtual inline const char* type() const { return "DepthwiseConvolution"; }
 
  protected:
@@ -89,19 +86,6 @@ class DepthwiseConvolutionLayer : public BaseConvolutionLayer<Dtype> {
       const vector<bool>& propagate_down, const vector<Blob<Dtype>*>& bottom);
   virtual inline bool reverse_dimensions() { return false; }
   virtual void compute_output_shape();
-
-  unsigned int kernel_h_;
-unsigned int kernel_w_;
-unsigned int stride_h_;
-unsigned int stride_w_;
-unsigned int pad_h_;
-unsigned int pad_w_;
-unsigned int dilation_h_;
-unsigned int dilation_w_;
-Blob<Dtype> weight_buffer_;
-Blob<Dtype> weight_multiplier_;
-Blob<Dtype> bias_buffer_;
-Blob<Dtype> bias_multiplier_;
 };
 
 }  // namespace caffe
