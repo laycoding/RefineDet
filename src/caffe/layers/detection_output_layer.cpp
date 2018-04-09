@@ -31,7 +31,7 @@ void DetectionOutputLayer<Dtype>::LayerSetUp(const vector<Blob<Dtype>*>& bottom,
   root_folder_ =detection_output_param.root_folder();
   save_txt_ =detection_output_param.save_txt();
   save_draw_img_ = detection_output_param.save_draw_img();
-  save_dir_=detection_output_param.save_dir(); 
+  save_dir_=detection_output_param.save_dir();
   confidence_threshold_ = detection_output_param.has_confidence_threshold() ?
       detection_output_param.confidence_threshold() : -FLT_MAX;
   // Parameters used in nms.
@@ -192,7 +192,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
   const Dtype* arm_loc_data = NULL;
   const int num = bottom[0]->num();
   vector<LabelBBox> all_arm_loc_preds;
-  if (bottom.size() >= 4){
+  if (bottom.size() >= 5){
 	arm_conf_data = bottom[3]->cpu_data();
   }
   if (bottom.size() >= 5){
