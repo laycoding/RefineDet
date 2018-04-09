@@ -29,7 +29,7 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 	int* stride_data = this->stride_.mutable_cpu_data();
 	int* pad_data = this->pad_.mutable_cpu_data();
 
-	for (int i = 0; i < bottom.size(); ++i) 
+	for (int i = 0; i < bottom.size(); ++i)
   {
 		const Dtype* bottom_data = bottom[i]->cpu_data();
 		Dtype* top_data = top[i]->mutable_cpu_data();
@@ -50,9 +50,6 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 		const int conved_weight = this->output_shape_[1];
 
 		const bool bias_term_ = this->bias_term_;
-    const Dtype* const bias = NULL;
-    if(bias_term_)
-       bias=this->blobs_[1]->cpu_data();
     const int  num_ = bottom[i]->num();
     for (int n = 0; n < num_; ++n)
     {
@@ -80,6 +77,7 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
            }
            if(bias_term_)
            {
+             const Dtype* const bias=this->blobs_[1]->cpu_data();
              *top_data++ = (value+bias[c];
            }else{
             *top_data++ = value;
