@@ -33,7 +33,6 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
   {
 		const Dtype* bottom_data = bottom[i]->cpu_data();
 		Dtype* top_data = top[i]->mutable_cpu_data();
-		const int count = top[i]->count();
 		vector<int> shape_ = bottom[i]->shape();
 		const int channels_ = shape_[1];
 		const int height_ = shape_[2];
@@ -46,9 +45,6 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 		const int pad_h_ = pad_data[0];
 		const int pad_w_ = pad_data[1];
 
-		const int conved_height = this->output_shape_[0];
-		const int conved_weight = this->output_shape_[1];
-
 		const bool bias_term_ = this->bias_term_;
     const int  num_ = bottom[i]->num();
     for (int n = 0; n < num_; ++n)
@@ -59,13 +55,11 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
        {
          for (int w = 0; w < width_; ++w)
          {
-           const Dtype* weight_data = weight + c * kernel_h_ * kernel_w_
            const Dtype* const bottom_slice = bottom_data + (n * channels_ + c) * height_ * width_;
-           Dtype value = 0;
-           int hstart = h * stride_h - pad_h;
-           int wstart = w * stride_w - pad_w;
-           int hend = min(hstart + kernel_h, height_ + pad_h);
-           int wend = min(wstart + kernel_w, width_ + pad_w);
+           int hstart = h * stride_h_ - pad_h_;
+           int wstart = w * stride_w_ - pad_w_;
+           int hend = min(hstart + kernel_h_, height_ + pad_h_);
+           int wend = min(wstart + kernel_w_, width_ + pad_w_);
            hstart = max(hstart, 0);
            wstart = max(wstart, 0);
            hend = min(hend, height_);
@@ -80,7 +74,7 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
            int kwstart=wend<kernel_w_?kernel_w_-wend:0;
            for (int h = hstart; h < hend; ++h) {
             for (int w = wstart; w < wend; ++w) {
-                aveval += bottom_slice[h * width_ + w]*weight_slice[(khstart+h-hstart) * kernel_w + (kwstart+w-wstart)];
+                aveval += bottom_slice[h * width_ + w]*weight_slice[(khstart+h-hstart) * kernel_w_ + (kwstart+w-wstart)];
               }
             }
            if(bias_term_)
