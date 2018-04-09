@@ -78,7 +78,7 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
            if(bias_term_)
            {
              const Dtype* const bias=this->blobs_[1]->cpu_data();
-             *top_data++ = (value+bias[c];
+             *top_data++ = (value+bias[c]);
            }else{
             *top_data++ = value;
            }
