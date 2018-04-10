@@ -288,10 +288,13 @@ int test() {
   vector<float> test_score;
   float loss = 0;
   for (int i = 0; i < FLAGS_iterations; ++i) {
+    Timer total_timer;
+    total_timer.Start();
     float iter_loss;
     const vector<Blob<float>*>& result =
         caffe_net.Forward(&iter_loss);
     loss += iter_loss;
+    LOG(INFO) << "Iteration: " << j + 1 <<" "<< iter_timer.MilliSeconds() << " ms.";
     int idx = 0;
     for (int j = 0; j < result.size(); ++j) {
       const float* result_vec = result[j]->cpu_data();

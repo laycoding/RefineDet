@@ -186,6 +186,7 @@ template <typename Dtype>
 void DetectionOutputLayer<Dtype>::Forward_cpu(
     const vector<Blob<Dtype>*>& bottom, const vector<Blob<Dtype>*>& top)
      {
+       /*
        string det_odm_loc = "/workspace/run/test/Det_odm_loc_cpu.txt";
        string det_odm_conf = "/workspace/run/test/Det_odm_conf_cpu.txt";
        string det_arm_prior= "/workspace/run/test/Det_arm_prior_cpu.txt";
@@ -231,7 +232,7 @@ void DetectionOutputLayer<Dtype>::Forward_cpu(
          fprintf(fid,"%.3f ",tmp[ii]);
        }
        fclose(fid);
-
+  */
   const Dtype* loc_data = bottom[0]->cpu_data();
   const Dtype* conf_data = bottom[1]->cpu_data();
   const Dtype* prior_data = bottom[2]->cpu_data();

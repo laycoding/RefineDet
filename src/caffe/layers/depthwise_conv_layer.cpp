@@ -33,7 +33,6 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 	for (int i = 0; i < bottom.size(); ++i)
   {
 		const Dtype* bottom_data = bottom[i]->cpu_data();
-    LOG(INFO)<<bottom_data[0]<<" "<< bottom_data[1];
 		Dtype* top_data = top[i]->mutable_cpu_data();
 		vector<int> shape_ = bottom[i]->shape();
 		const int channels_ = shape_[1];
@@ -47,11 +46,11 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 		const int pad_h_ = pad_data[0];
 		const int pad_w_ = pad_data[1];
     const int  num_ = bottom[i]->num();
-    LOG(INFO)<<"size: "<<bottom.size()<<"num:"<<num_<<" channels_: "<<channels_<<" height_: "<<height_<<" width_: "<<width_<<" kernel_h_: "<<kernel_h_<<" kernel_w_: "<<kernel_w_<<" stride_h_: "<<stride_h_<<" stride_w_: "<<stride_w_<<" pad_h_: "<<pad_h_<<" pad_w_: "<<pad_w_;
+    //LOG(INFO)<<"size: "<<bottom.size()<<"num:"<<num_<<" channels_: "<<channels_<<" height_: "<<height_<<" width_: "<<width_<<" kernel_h_: "<<kernel_h_<<" kernel_w_: "<<kernel_w_<<" stride_h_: "<<stride_h_<<" stride_w_: "<<stride_w_<<" pad_h_: "<<pad_h_<<" pad_w_: "<<pad_w_;
 		const bool bias_term_ = this->bias_term_;
     const int conved_height = this->output_shape_[0];
 		const int conved_weight = this->output_shape_[1];
-    int count=0;
+    //int count=0;
     for (int n = 0; n < num_; ++n)
     {
      for (int c = 0; c < channels_; ++c)
@@ -76,15 +75,15 @@ void DepthwiseConvolutionLayer<Dtype>::Forward_cpu(const vector<Blob<Dtype>*>& b
 
            int khstart=hend<kernel_h_?kernel_h_-hend:0;
            int kwstart=wend<kernel_w_?kernel_w_-wend:0;
-           for (int hh = hstart; hh < hend; ++hh) {
-            for (int ww = wstart; ww < wend; ++ww) {
+           for (int hh = hstart; hh < hend; ++hh)
+           {
+            for (int ww = wstart; ww < wend; ++ww)
+            {
                 aveval += bottom_slice[hh * width_ + ww]*weight_slice[(khstart+hh-hstart) * kernel_w_ + (kwstart+ww-wstart)];
-                if(count++<10)
-                   LOG(INFO)<<bottom_slice[hh * width_ + ww]<<" "<<weight_slice[(khstart+hh-hstart) * kernel_w_ + (kwstart+ww-wstart)];
+                //if(count++<10)
+                //   LOG(INFO)<<bottom_slice[hh * width_ + ww]<<" "<<weight_slice[(khstart+hh-hstart) * kernel_w_ + (kwstart+ww-wstart)];
               }
             }
-
-          //     LOG(INFO)<<aveval<<" ";
            if(bias_term_)
            {
              const Dtype* const bias=this->blobs_[1]->cpu_data();
