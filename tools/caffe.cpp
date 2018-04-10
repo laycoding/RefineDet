@@ -287,14 +287,16 @@ int test() {
   vector<int> test_score_output_id;
   vector<float> test_score;
   float loss = 0;
+  Timer total_timer;
+  total_timer.Start();
   for (int i = 0; i < FLAGS_iterations; ++i) {
-    Timer total_timer;
-    total_timer.Start();
+    Timer iter_timer;
     float iter_loss;
     const vector<Blob<float>*>& result =
         caffe_net.Forward(&iter_loss);
     loss += iter_loss;
     LOG(INFO) << "Iteration: " << j + 1 <<" "<< iter_timer.MilliSeconds() << " ms.";
+   /*
     int idx = 0;
     for (int j = 0; j < result.size(); ++j) {
       const float* result_vec = result[j]->cpu_data();
@@ -311,8 +313,11 @@ int test() {
         LOG(INFO) << "Batch " << i << ", " << output_name << " = " << score;
       }
     }
+    */
   }
-  loss /= FLAGS_iterations;
+  LOG(INFO) << "mean time: " << total_timer.MilliSeconds()/FLAGS_iterations << " ms.";
+
+  /*loss /= FLAGS_iterations;
   LOG(INFO) << "Loss: " << loss;
   for (int i = 0; i < test_score.size(); ++i) {
     const std::string& output_name = caffe_net.blob_names()[
@@ -327,7 +332,7 @@ int test() {
     }
     LOG(INFO) << output_name << " = " << mean_score << loss_msg_stream.str();
   }
-
+*/
   return 0;
 }
 RegisterBrewFunction(test);
