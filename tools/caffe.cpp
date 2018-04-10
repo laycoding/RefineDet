@@ -291,6 +291,7 @@ int test() {
   total_timer.Start();
   for (int i = 0; i < FLAGS_iterations; ++i) {
     Timer iter_timer;
+    iter_timer.Start();
     float iter_loss;
     const vector<Blob<float>*>& result =
         caffe_net.Forward(&iter_loss);
