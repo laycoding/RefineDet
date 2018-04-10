@@ -295,7 +295,7 @@ int test() {
     const vector<Blob<float>*>& result =
         caffe_net.Forward(&iter_loss);
     loss += iter_loss;
-    LOG(INFO) << "Iteration: " << j + 1 <<" "<< iter_timer.MilliSeconds() << " ms.";
+    LOG(INFO) << "Iteration: " << i <<" "<< iter_timer.MilliSeconds() << " ms.";
    /*
     int idx = 0;
     for (int j = 0; j < result.size(); ++j) {
