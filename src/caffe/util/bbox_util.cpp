@@ -2735,7 +2735,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         cv::Mat testimg=cv::imread(root_folder+lines_[count].first);
         int testimgWidth=testimg.cols;
         int testimgHeight=testimg.rows;
-        LOG(INFO)<<fileName1;
+        //LOG(INFO)<<fileName1;
         CHECK_LT(label, colors.size());
         FILE* fid=NULL;//=fopen(fileName1,"w");
         const cv::Scalar& color = colors[label];
