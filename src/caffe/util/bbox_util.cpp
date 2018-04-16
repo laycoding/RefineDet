@@ -2622,11 +2622,12 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
     snprintf(buffer, sizeof(buffer), "FPS: %.2f", fps);
     cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
                                     &baseline);
-    cv::rectangle(image, cv::Point(0, 0),
+    /*cv::rectangle(image, cv::Point(0, 0),
                   cv::Point(text.width, text.height + baseline),
                   CV_RGB(255, 255, 255), CV_FILLED);
     cv::putText(image, buffer, cv::Point(0, text.height + baseline / 2.),
                 fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
+                */
     /*
     //生成供MTCNN用的正样本负样本，及对对应的人脸框。
     for (map<int, vector<NormalizedBBox> >::iterator it =
