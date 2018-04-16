@@ -2775,26 +2775,33 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         const cv::Scalar& color = colors[label];
         const vector<NormalizedBBox>& bboxes = it->second;
         if(bboxes.size()>0) detectedObject=true;
+        int idx=0;
+        int lefttestx=image.size().width;
         for (int j = 0; j < bboxes.size(); ++j)
         {
           cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
           cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
           cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
-          if(count>800&&count<950&&j==0)
+          if(lefttestx>top_left_pt.x)
           {
-          cv::Point bottom_left_pt(bboxes[j].xmin(), bboxes[j].ymax());
-          //snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
-          snprintf(buffer, sizeof(buffer), "%s","QianJie");
-          cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
-                                        &baseline);
-          cv::rectangle(
-             image, bottom_left_pt + cv::Point(0, 0),
-             bottom_left_pt + cv::Point(text.width, -text.height-baseline),
-             color, CV_FILLED);
-          cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
-                     fontface, scale, CV_RGB(0, 0, 0), thickness, 4);
-         }
+            idx=j;
+            lefttestx=top_left_pt.x;
+          }
        }
+       if(count>800&&count<900)
+       {
+       cv::Point bottom_left_pt(bboxes[idx].xmin(), bboxes[idx].ymax());
+       //snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
+       snprintf(buffer, sizeof(buffer), "%s","QianJie");
+       cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
+                                     &baseline);
+       cv::rectangle(
+          image, bottom_left_pt + cv::Point(0, 0),
+          bottom_left_pt + cv::Point(text.width, -text.height-baseline),
+          color, CV_FILLED);
+       cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
+                  fontface, scale, CV_RGB(0, 0, 0), thickness, 1);
+      }
        if (!cap_out.isOpened()) {
         cv::Size size(image.size().width, image.size().height);
         cv::VideoWriter outputVideo(save_file, CV_FOURCC('D', 'I', 'V', 'X'),
