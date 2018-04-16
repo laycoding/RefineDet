@@ -2769,7 +2769,8 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         if(fid!=NULL)
           fclose(fid);
       }else
-      {
+      if(!save_file.empty())
+      {//保存视频
         CHECK_LT(label, colors.size());
         const cv::Scalar& color = colors[label];
         const vector<NormalizedBBox>& bboxes = it->second;
@@ -2789,9 +2790,17 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
              color, CV_FILLED);
           cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
                      fontface, scale, CV_RGB(0, 0, 0), thickness, 4);
+       }
+       if (!cap_out.isOpened()) {
+        cv::Size size(image.size().width, image.size().height);
+        cv::VideoWriter outputVideo(save_file, CV_FOURCC('D', 'I', 'V', 'X'),
+            30, size, true);
+        cap_out = outputVideo;
       }
+      cap_out.write(image);
      }
     }
+
 	  if(save_draw_img&&detectedObject)
     {
         std::ifstream infile(source.c_str());
