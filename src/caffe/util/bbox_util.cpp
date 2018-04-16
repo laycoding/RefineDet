@@ -2771,7 +2771,6 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
       }else
       if(!save_file.empty())
       {//保存视频
-        count++；
         CHECK_LT(label, colors.size());
         const cv::Scalar& color = colors[label];
         const vector<NormalizedBBox>& bboxes = it->second;
