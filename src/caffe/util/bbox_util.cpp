@@ -2780,6 +2780,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
           cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
           cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
+          /*
           cv::Point bottom_left_pt(bboxes[j].xmin(), bboxes[j].ymax());
           snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
           cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
@@ -2790,6 +2791,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
              color, CV_FILLED);
           cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
                      fontface, scale, CV_RGB(0, 0, 0), thickness, 4);
+          */
        }
        if (!cap_out.isOpened()) {
         cv::Size size(image.size().width, image.size().height);
