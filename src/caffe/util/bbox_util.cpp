@@ -2789,7 +2789,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
             lefttestx=top_left_pt.x;
           }
        }
-       if(count>800&&count<910)
+       if(count>800&&count<915)
        {
        cv::Point bottom_left_pt(bboxes[idx].xmin(), bboxes[idx].ymax());
        //snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
