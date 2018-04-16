@@ -2780,7 +2780,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
           cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
           cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
-          if(count>50&&j==0)
+          if(count>500&&j==0)
           {
           cv::Point bottom_left_pt(bboxes[j].xmin(), bboxes[j].ymax());
           //snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
