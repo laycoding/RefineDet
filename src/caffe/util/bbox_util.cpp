@@ -2771,6 +2771,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
       }else
       if(!save_file.empty())
       {//保存视频
+        count++；
         CHECK_LT(label, colors.size());
         const cv::Scalar& color = colors[label];
         const vector<NormalizedBBox>& bboxes = it->second;
@@ -2780,9 +2781,11 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
           cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
           cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
-          /*
+          if(count>50&&j==0)
+          {
           cv::Point bottom_left_pt(bboxes[j].xmin(), bboxes[j].ymax());
-          snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
+          //snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
+          snprintf(buffer, sizeof(buffer), "%s","QianJie");
           cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
                                         &baseline);
           cv::rectangle(
@@ -2791,7 +2794,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
              color, CV_FILLED);
           cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
                      fontface, scale, CV_RGB(0, 0, 0), thickness, 4);
-          */
+         }
        }
        if (!cap_out.isOpened()) {
         cv::Size size(image.size().width, image.size().height);
