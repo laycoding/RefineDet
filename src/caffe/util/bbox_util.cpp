@@ -2732,7 +2732,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         }
         char fileName1[1000];
         string imgname=lines_[count].first;
-        sprintf(fileName1, "%s%s.txt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+        sprintf(fileName1, "%s%stxt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
         cv::Mat testimg=cv::imread(root_folder+lines_[count].first);
         int testimgWidth=testimg.cols;
         int testimgHeight=testimg.rows;
