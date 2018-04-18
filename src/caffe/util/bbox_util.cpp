@@ -2786,7 +2786,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           cv::Rect rect(top_left_pt.x,top_left_pt.y,bottom_right_pt.x-top_left_pt.x,bottom_right_pt.y-top_left_pt.y);
           cv::Mat copface=image(rect);
           char fileName1[1000];
-          sprintf(fileName1, "%s/%d_%d",save_dir.substr(0,save_dir.length()-4).c_str(),count+1,j+1);
+          sprintf(fileName1, "%s/%d_%d",save_file.substr(0,save_dir.length()-4).c_str(),count+1,j+1);
           FILE* fid=fopen(fileName1,"w");
           fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width),cvRound(bboxes[j].ymin()/height),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height),bboxes[j].score());
           fclose(fid);
