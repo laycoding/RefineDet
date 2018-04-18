@@ -2782,7 +2782,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         {
           cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
           cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
-          cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
+
           cv::Rect rect(top_left_pt.x,top_left_pt.y,bottom_right_pt.x-top_left_pt.x,bottom_right_pt.y-top_left_pt.y);
           cv::Mat copface=image(rect);
           char fileName1[1000];
@@ -2792,6 +2792,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           fclose(fid);
           LOG(INFO)<<fileName1;
           cv::imwrite(fileName1,copface);
+          cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
        }
        /*
        cv::Point bottom_left_pt(bboxes[idx].xmin(), bboxes[idx].ymax());
