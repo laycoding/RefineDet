@@ -2780,7 +2780,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         int lefttestx=image.size().width;
         for (int j = 0; j < bboxes.size(); ++j)
         {
-          cv::Point top_left_pt(std::max(0.,bboxes[j].xmin()), std::max(0.,bboxes[j].ymin()));
+          cv::Point top_left_pt(std::max(0.f,bboxes[j].xmin()), std::max(0.f,bboxes[j].ymin()));
           cv::Point bottom_right_pt(std::min(float(width-1),bboxes[j].xmax()), std::min(float(height-1),bboxes[j].ymax()));
           cv::Rect rect(top_left_pt.x,top_left_pt.y,bottom_right_pt.x-top_left_pt.x,bottom_right_pt.y-top_left_pt.y);
           cv::Mat copface=image(rect);
