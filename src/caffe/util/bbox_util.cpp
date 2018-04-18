@@ -2790,6 +2790,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           FILE* fid=fopen(fileName1,"w");
           fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width),cvRound(bboxes[j].ymin()/height),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height),bboxes[j].score());
           fclose(fid);
+          LOG(INFO)<<fileName1;
           cv::imwrite(fileName1,copface);
        }
        /*
