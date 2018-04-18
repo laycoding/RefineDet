@@ -2783,14 +2783,16 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
           cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
           cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
-          if(lefttestx>top_left_pt.x)
-          {
-            idx=j;
-            lefttestx=top_left_pt.x;
-          }
+          cv::Rect rect(top_left_pt.x,top_left_pt.y,bottom_right_pt.x-top_left_pt.x,bottom_right_pt.y-top_left_pt.y);
+          cv::Mat copface=image(rect);
+          char fileName1[1000];
+          sprintf(fileName1, "%s/%d_%d",save_dir.subdir(0,save_dir.length()-4).c_str(),count+1,j+1);
+          fid=fopen(fileName1,"w");
+          fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width),cvRound(bboxes[j].ymin()/height),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height),bboxes[j].score());
+          fclose(fid);
+          cv::imwrite(fileName1,copface);
        }
-       if(count>800&&count<915)
-       {
+       /*
        cv::Point bottom_left_pt(bboxes[idx].xmin(), bboxes[idx].ymax());
        //snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
        snprintf(buffer, sizeof(buffer), "%s","QianJie");
@@ -2802,7 +2804,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           color, CV_FILLED);
        cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
                   fontface, scale, CV_RGB(0, 0, 0), thickness, 1);
-      }
+      */
        if (!cap_out.isOpened()) {
         cv::Size size(image.size().width, image.size().height);
         cv::VideoWriter outputVideo(save_file, CV_FOURCC('D', 'I', 'V', 'X'),
