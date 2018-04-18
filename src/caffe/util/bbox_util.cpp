@@ -2789,7 +2789,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           char fileName2[1000];
           sprintf(fileName2, "%s/%d_%d.txt",save_file.substr(0,save_file.length()-4).c_str(),count+1,j+1);
           FILE* fid=fopen(fileName2,"w");
-          fprintf(fid,"%d,%d,%d,%d,%f\n",cvRound(bboxes[j].xmin()/width),cvRound(bboxes[j].ymin()/height),cvRound((bboxes[j].xmax()-bboxes[j].xmin())/width),cvRound((bboxes[j].ymax()-bboxes[j].ymin())/height),bboxes[j].score());
+          fprintf(fid,"%d,%d,%d,%d,%f\n",bboxes[j].xmin()/width,bboxes[j].ymin()/height,(bboxes[j].xmax()-bboxes[j].xmin())/width,(bboxes[j].ymax()-bboxes[j].ymin())/height,bboxes[j].score());
           fclose(fid);
           //LOG(INFO)<<fileName1;
           cv::imwrite(fileName1,copface);
