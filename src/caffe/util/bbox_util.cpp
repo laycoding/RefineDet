@@ -2780,8 +2780,8 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         int lefttestx=image.size().width;
         for (int j = 0; j < bboxes.size(); ++j)
         {
-          cv::Point top_left_pt(max(0,bboxes[j].xmin()), max(0,bboxes[j].ymin()));
-          cv::Point bottom_right_pt(min(width,bboxes[j].xmax()), min(height,bboxes[j].ymax()));
+          cv::Point top_left_pt(max(0.,bboxes[j].xmin()), max(0.,bboxes[j].ymin()));
+          cv::Point bottom_right_pt(min(float(width-1),bboxes[j].xmax()), min(float(height-1),bboxes[j].ymax()));
           cv::Rect rect(top_left_pt.x,top_left_pt.y,bottom_right_pt.x-top_left_pt.x,bottom_right_pt.y-top_left_pt.y);
           cv::Mat copface=image(rect);
           char fileName1[1000];
