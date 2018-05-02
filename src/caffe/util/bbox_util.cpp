@@ -2818,9 +2818,9 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
       }
       cap_out.write(image);
      }
-     */
+     
     }
-
+    */
 	  if(save_draw_img&&detectedObject)
     {
         std::ifstream infile(source.c_str());
