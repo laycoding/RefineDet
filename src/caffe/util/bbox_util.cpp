@@ -2707,7 +2707,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                   }
     }
     count++;
-    /*##################################################*/
+    /*********************************************************/
     /*
     // 选择保存WIDERFACE的每张测试图的结果TXT，同时可选择保存结果图。
     for (map<int, vector<NormalizedBBox> >::iterator it =
@@ -2841,7 +2841,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
     }
     count++;
     */
-    /*##################################################*/
+    /*********************************************************/
   }
   start_clock = clock();
 }
