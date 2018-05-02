@@ -2809,6 +2809,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
        cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
                   fontface, scale, CV_RGB(0, 0, 0), thickness, 1);
       */
+      /*
        if (!cap_out.isOpened()) {
         cv::Size size(image.size().width, image.size().height);
         cv::VideoWriter outputVideo(save_file, CV_FOURCC('D', 'I', 'V', 'X'),
@@ -2817,6 +2818,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
       }
       cap_out.write(image);
      }
+     */
     }
 
 	  if(save_draw_img&&detectedObject)
