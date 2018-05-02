@@ -2628,7 +2628,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
     cv::putText(image, buffer, cv::Point(0, text.height + baseline / 2.),
                 fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
                 */
-
+    ##################################################
     //生成供MTCNN用的正样本负样本，及对对应的人脸框。
     for (map<int, vector<NormalizedBBox> >::iterator it =
                      all_detections[i].begin(); it != all_detections[i].end(); ++it)
@@ -2707,6 +2707,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                   }
     }
     count++;
+    ##################################################
     /*
     // 选择保存WIDERFACE的每张测试图的结果TXT，同时可选择保存结果图。
     for (map<int, vector<NormalizedBBox> >::iterator it =
@@ -2818,9 +2819,9 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
       }
       cap_out.write(image);
      }
-     
+
     }
-    */
+
 	  if(save_draw_img&&detectedObject)
     {
         std::ifstream infile(source.c_str());
@@ -2839,6 +2840,8 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
 	      cv::imwrite(fileName1,image);
     }
     count++;
+    */
+    ##################################################
   }
   start_clock = clock();
 }
