@@ -2633,78 +2633,78 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
     for (map<int, vector<NormalizedBBox> >::iterator it =
                      all_detections[i].begin(); it != all_detections[i].end(); ++it)
     {
-                  int label = it->first;
-                  string label_name = "Unknown";
-                  if (label_to_display_name.find(label) != label_to_display_name.end()) {
-                    label_name = label_to_display_name.find(label)->second;
-                  }
-                  if(save_txt)
-                  {
-                    std::ifstream infile(source.c_str());
-                    string line;
-                    size_t pos;
-                    int label;
-                    vector<std::pair<std::string, int> > lines_;
-                    while (std::getline(infile, line))
-                    {
-                      pos = line.find_last_of(' ');
-                      label = atoi(line.substr(pos + 1).c_str());
-                      lines_.push_back(std::make_pair(line.substr(0, pos), label));
-                    }
+        int label = it->first;
+        string label_name = "Unknown";
+        if (label_to_display_name.find(label) != label_to_display_name.end()) {
+            label_name = label_to_display_name.find(label)->second;
+        }
+        if(save_txt)
+        {
+          std::ifstream infile(source.c_str());
+          string line;
+          size_t pos;
+          int label;
+          vector<std::pair<std::string, int> > lines_;
+          while (std::getline(infile, line))
+          {
+              pos = line.find_last_of(' ');
+              label = atoi(line.substr(pos + 1).c_str());
+              lines_.push_back(std::make_pair(line.substr(0, pos), label));
+          }
 
-                    string imgname=lines_[count].first;
-                    cv::Mat testimg=cv::imread(root_folder+lines_[count].first);
-                    cv::Mat showimg=testimg.clone();
-                    int testimgWidth=testimg.cols;
-                    int testimgHeight=testimg.rows;
-                    //LOG(INFO)<<fileName1;
-                    CHECK_LT(label, colors.size());
-                    const cv::Scalar& color = colors[label];
-                    const vector<NormalizedBBox>& bboxes = it->second;
-                    if(bboxes.size()>0) detectedObject=true;
-                    for (int j = 0; j < bboxes.size(); ++j)
-                    {
-                        cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
-                        cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
-                        //cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
+          string imgname=lines_[count].first;
+          cv::Mat testimg=cv::imread(root_folder+lines_[count].first);
+          cv::Mat showimg=testimg.clone();
+          int testimgWidth=testimg.cols;
+          int testimgHeight=testimg.rows;
+          //LOG(INFO)<<fileName1;
+          CHECK_LT(label, colors.size());
+          const cv::Scalar& color = colors[label];
+          const vector<NormalizedBBox>& bboxes = it->second;
+          if(bboxes.size()>0) detectedObject=true;
+          for (int j = 0; j < bboxes.size(); ++j)
+          {
+            cv::Point top_left_pt(bboxes[j].xmin(), bboxes[j].ymin());
+            cv::Point bottom_right_pt(bboxes[j].xmax(), bboxes[j].ymax());
+            //cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
 
-                        int topx=min(max(0,cvRound(float(bboxes[j].xmin())/width*testimgWidth)),testimgWidth-1);
-                        int topy=min(max(0,cvRound(float(bboxes[j].ymin())/height*testimgHeight)),testimgHeight-1);
-                        int facewidth=cvRound(float(bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth);
-                        int faceheight=cvRound(float(bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight);
-                        if(topx+facewidth>=testimgWidth-1)
-                           facewidth = testimgWidth-topx;
-                        if(topy+faceheight>=testimgHeight-1)
-                           faceheight=testimgHeight-topy;
+            int topx=min(max(0,cvRound(float(bboxes[j].xmin())/width*testimgWidth)),testimgWidth-1);
+            int topy=min(max(0,cvRound(float(bboxes[j].ymin())/height*testimgHeight)),testimgHeight-1);
+            int facewidth=cvRound(float(bboxes[j].xmax()-bboxes[j].xmin())/width*testimgWidth);
+            int faceheight=cvRound(float(bboxes[j].ymax()-bboxes[j].ymin())/height*testimgHeight);
+            if(topx+facewidth>=testimgWidth-1)
+              facewidth = testimgWidth-topx;
+            if(topy+faceheight>=testimgHeight-1)
+              faceheight=testimgHeight-topy;
 
-                        if(facewidth>=24&&faceheight>=24)
-                        {
-                          char fileName1[1000];
-                          //sprintf(fileName1, "%s%s_%d.txt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
-                          //FILE* fid=fopen(fileName1,"w");
-                          //fprintf(fid,"%s\n",imgname.c_str(),j);
-                          //fprintf(fid,"%d,%d,%d,%d,%f\n",topx,topy,facewidth,faceheight,bboxes[j].score());
-                          //fclose(fid);
-                          cv::Rect rectroi(topx,topy,facewidth,faceheight);
-                          cv::Mat copface=testimg(rectroi);
-                          cv::Mat resizeface;
-                          cv::resize(copface,resizeface,cv::Size(48,48),0,0,cv::INTER_CUBIC);
-                          sprintf(fileName1, "%s%f_%s_%d.jpg",save_dir.c_str(),bboxes[j].score(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j+1);
-                          cv::imwrite(fileName1,resizeface);
-                          cv::rectangle(showimg, cv::Point(topx,topy), cv::Point(topx+facewidth,topy+faceheight), color, 4);
-                        }
-                    }
-                    if(save_draw_img)
-                    {
-                      char fileName2[1000];
-                      sprintf(fileName2, "%s%s_0.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
-                      //LOG(INFO)<<fileName2<<" "<<showimg.rows<<" "<<showimg.cols;
-                      cv::imwrite(fileName2,showimg);
-                      //sprintf(fileName2, "%s%s_ori.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
-                      //cv::imwrite(fileName2,image);
-                    }
+            if(facewidth>=24&&faceheight>=24)
+            {
+                char fileName1[1000];
+                sprintf(fileName1, "%s%s_%d.txt",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j);
+                FILE* fid=fopen(fileName1,"w");
+                fprintf(fid,"%s\n",imgname.c_str(),j);
+                fprintf(fid,"%d,%d,%d,%d,%f\n",topx,topy,facewidth,faceheight,bboxes[j].score());
+                fclose(fid);
+                cv::Rect rectroi(topx,topy,facewidth,faceheight);
+                cv::Mat copface=testimg(rectroi);
+                cv::Mat resizeface;
+                cv::resize(copface,resizeface,cv::Size(48,48),0,0,cv::INTER_CUBIC);
+                sprintf(fileName1, "%s%s_%d.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str(),j+1);
+                cv::imwrite(fileName1,resizeface);
+                cv::rectangle(showimg, cv::Point(topx,topy), cv::Point(topx+facewidth,topy+faceheight), color, 4);
+            }
+          }
+          if(save_draw_img)
+          {
+            char fileName2[1000];
+            sprintf(fileName2, "%s%s_0.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+            //LOG(INFO)<<fileName2<<" "<<showimg.rows<<" "<<showimg.cols;
+            cv::imwrite(fileName2,showimg);
+            //sprintf(fileName2, "%s%s_ori.jpg",save_dir.c_str(),lines_[count].first.substr(0,imgname.length()-4).c_str());
+            //cv::imwrite(fileName2,image);
+          }
 
-                  }
+        }
     }
     count++;
     /*********************************************************/
