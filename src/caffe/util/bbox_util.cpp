@@ -2629,6 +2629,7 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
                 fontface, scale, CV_RGB(0, 0, 0), thickness, 8);
                 */
     /*********************************************************/
+    /*
     //生成供MTCNN用的正样本负样本，及对对应的人脸框。
     for (map<int, vector<NormalizedBBox> >::iterator it =
                      all_detections[i].begin(); it != all_detections[i].end(); ++it)
@@ -2707,8 +2708,8 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
         }
     }
     count++;
+    */
     /*********************************************************/
-    /*
     // 选择保存WIDERFACE的每张测试图的结果TXT，同时可选择保存结果图。
     for (map<int, vector<NormalizedBBox> >::iterator it =
          all_detections[i].begin(); it != all_detections[i].end(); ++it)
@@ -2796,21 +2797,6 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
           cv::imwrite(fileName1,copface);
           cv::rectangle(image, top_left_pt, bottom_right_pt, color, 4);
        }
-       */
-       /*
-       cv::Point bottom_left_pt(bboxes[idx].xmin(), bboxes[idx].ymax());
-       //snprintf(buffer, sizeof(buffer), "%.2f",bboxes[j].score());
-       snprintf(buffer, sizeof(buffer), "%s","QianJie");
-       cv::Size text = cv::getTextSize(buffer, fontface, scale, thickness,
-                                     &baseline);
-       cv::rectangle(
-          image, bottom_left_pt + cv::Point(0, 0),
-          bottom_left_pt + cv::Point(text.width, -text.height-baseline),
-          color, CV_FILLED);
-       cv::putText(image, buffer, bottom_left_pt - cv::Point(0, baseline),
-                  fontface, scale, CV_RGB(0, 0, 0), thickness, 1);
-      */
-      /*
        if (!cap_out.isOpened()) {
         cv::Size size(image.size().width, image.size().height);
         cv::VideoWriter outputVideo(save_file, CV_FOURCC('D', 'I', 'V', 'X'),
@@ -2840,7 +2826,6 @@ void VisualizeBBox(const vector<cv::Mat>& images, const Blob<Dtype>* detections,
 	      cv::imwrite(fileName1,image);
     }
     count++;
-    */
     /*********************************************************/
   }
   start_clock = clock();
