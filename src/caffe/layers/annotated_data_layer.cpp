@@ -259,7 +259,7 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     if (transform_param.has_expand_param()) {
       delete expand_datum;
     }
-    delete anno_datum;
+    delete anno_datum_;
     trans_time += timer.MicroSeconds();
 
     reader_.free().push(const_cast<AnnotatedDatum*>(&anno_datum));
