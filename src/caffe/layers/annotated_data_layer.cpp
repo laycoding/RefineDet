@@ -152,9 +152,10 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     timer.Start();
     AnnotatedDatum distort_datum;
     AnnotatedDatum* expand_datum = NULL;
-    AnnotatedDatum* anno_datum = new AnnotatedDatum();
+    AnnotatedDatum* anno_datum_ = new AnnotatedDatum();
     /*fliter the small face*/
-    Filter_small_face(anno_datum_ori, anno_datum);
+    Filter_small_face(anno_datum_ori, anno_datum_);
+    AnnotatedDatum& anno_datum = *anno_datum_;
     //anno_datum do only has faces larger than 0.125
     if (transform_param.has_distort_param()) {
       distort_datum.CopyFrom(anno_datum);
