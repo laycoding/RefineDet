@@ -172,7 +172,7 @@ bool IfValidBBox(const NormalizedBBox& bbox) {
 
 void Filter_small_face(const AnnotatedDatum& anno_datum_ori, AnnotatedDatum* anno_datum) {
   anno_datum->set_type(anno_datum_ori.type());
-  anno_datum.mutable_datum()->CopyFrom(anno_datum_ori.datum());
+  anno_datum->mutable_datum()->CopyFrom(anno_datum_ori.datum());
   vector<NormalizedBBox> object_bboxes;
   GroupObjectBBoxes(anno_datum_ori, &object_bboxes);
   AnnotationGroup filtered_anno_group;
@@ -193,6 +193,7 @@ void Filter_small_face(const AnnotatedDatum& anno_datum_ori, AnnotatedDatum* ann
       }
     }
   anno_datum->mutable_annotation_group()->Add()->CopyFrom(filtered_anno_group);
+  }
 }
 
 }  // namespace caffe
