@@ -181,7 +181,6 @@ void Filter_small_face(const AnnotatedDatum& anno_datum_ori, AnnotatedDatum* ann
     const AnnotationGroup& anno_group = anno_datum_ori.annotation_group(g);
     AnnotationGroup filtered_anno_group;
     // Go through each Annotation.
-    // bool has_valid_annotation = false;
     for (int a = 0; a < anno_group.annotation_size(); ++a) {
       const Annotation& anno = anno_group.annotation(a);      
       const NormalizedBBox& bbox = anno.bbox();
@@ -192,8 +191,8 @@ void Filter_small_face(const AnnotatedDatum& anno_datum_ori, AnnotatedDatum* ann
         filtered_bbox->CopyFrom(bbox);
       }
     }
-  anno_datum->mutable_annotation_group()->Add()->CopyFrom(filtered_anno_group);
   }
+  anno_datum->mutable_annotation_group()->Add()->CopyFrom(filtered_anno_group);
 }
 
 }  // namespace caffe
