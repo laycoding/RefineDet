@@ -160,4 +160,23 @@ void GenerateBatchSamples(const AnnotatedDatum& anno_datum,
   }
 }
 
+void Filter_small_face(const AnnotatedDatum& anno_datum_ori, const AnnotatedDatum& anno_datum) {
+  anno_datum->set_type(anno_datum_ori.type());
+  anno_datum.mutable_datum().CopyFrom(anno_datum_ori.datum());
+  vector<NormalizedBBox> object_bboxes;
+  GroupObjectBBoxes(anno_datum_ori, &object_bboxes);
+  AnnotationGroup filtered_anno_group;
+  //fliter small faces
+  for (int g = 0; g < anno_datum_ori.annotation_group_size(); ++g) {
+    const AnnotationGroup& anno_group = anno_datum_ori.annotation_group(g);
+    AnnotationGroup filtered_anno_group;
+    // Go through each Annotation.
+    // bool has_valid_annotation = false;
+    for (int a = 0; a < anno_group.annotation_size(); ++a) {
+      const Annotation& anno = anno_group.annotation(a);      
+      
+    }
+  anno_datum->mutable_annotation_group()->Add()->CopyFrom(filtered_anno_group);
+}
+
 }  // namespace caffe

@@ -147,11 +147,15 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
   for (int item_id = 0; item_id < batch_size; ++item_id) {
     timer.Start();
     // get a anno_datum
-    AnnotatedDatum& anno_datum = *(reader_.full().pop("Waiting for data"));
+    AnnotatedDatum& anno_datum_ori = *(reader_.full().pop("Waiting for data"));
     read_time += timer.MicroSeconds();
     timer.Start();
     AnnotatedDatum distort_datum;
     AnnotatedDatum* expand_datum = NULL;
+    AnnotatedDatum* anno_datum = NULL;
+    /*fliter the small face*/
+    Filter_small_face(anno_datum_ori, anno_datum);
+    //anno_datum do only has faces larger than 0.125
     if (transform_param.has_distort_param()) {
       distort_datum.CopyFrom(anno_datum);
       this->data_transformer_->DistortImage(anno_datum.datum(),
