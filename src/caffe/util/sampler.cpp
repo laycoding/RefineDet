@@ -170,7 +170,7 @@ bool IfValidBBox(const NormalizedBBox& bbox) {
   return true;
 }
 
-void Filter_small_face(const AnnotatedDatum& anno_datum_ori, const AnnotatedDatum& anno_datum) {
+void Filter_small_face(const AnnotatedDatum& anno_datum_ori, AnnotatedDatum& anno_datum) {
   anno_datum->set_type(anno_datum_ori.type());
   anno_datum.mutable_datum().CopyFrom(anno_datum_ori.datum());
   vector<NormalizedBBox> object_bboxes;

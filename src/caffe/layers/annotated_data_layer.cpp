@@ -152,7 +152,7 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     timer.Start();
     AnnotatedDatum distort_datum;
     AnnotatedDatum* expand_datum = NULL;
-    AnnotatedDatum* anno_datum = NULL;
+    AnnotatedDatum* anno_datum = new AnnotatedDatum();
     /*fliter the small face*/
     Filter_small_face(anno_datum_ori, anno_datum);
     //anno_datum do only has faces larger than 0.125
@@ -258,6 +258,7 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     if (transform_param.has_expand_param()) {
       delete expand_datum;
     }
+    delete anno_datum;
     trans_time += timer.MicroSeconds();
 
     reader_.free().push(const_cast<AnnotatedDatum*>(&anno_datum));
