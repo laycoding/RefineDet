@@ -34,7 +34,8 @@ void GenerateBatchSamples(const AnnotatedDatum& anno_datum,
                           const vector<BatchSampler>& batch_samplers,
                           vector<NormalizedBBox>* sampled_bboxes);
 
-// Fliter small faces 
+// Fliter small faces
+bool IfValidBBox(const NormalizedBBox& bbox);
 void Filter_small_face(const AnnotatedDatum& anno_datum_ori, const AnnotatedDatum& anno_datum);
 }  // namespace caffe
 
