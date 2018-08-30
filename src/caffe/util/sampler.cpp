@@ -175,24 +175,28 @@ void Filter_small_face(const AnnotatedDatum& anno_datum_ori, AnnotatedDatum* ann
   anno_datum->mutable_datum()->CopyFrom(anno_datum_ori.datum());
   vector<NormalizedBBox> object_bboxes;
   GroupObjectBBoxes(anno_datum_ori, &object_bboxes);
-  AnnotationGroup filtered_anno_group;
   //fliter small faces
   for (int g = 0; g < anno_datum_ori.annotation_group_size(); ++g) {
-    const AnnotationGroup& anno_group = anno_datum_ori.annotation_group(g);
     AnnotationGroup filtered_anno_group;
+    const AnnotationGroup& anno_group = anno_datum_ori.annotation_group(g);
     // Go through each Annotation.
+    bool has_valid_annotation = false;
     for (int a = 0; a < anno_group.annotation_size(); ++a) {
       const Annotation& anno = anno_group.annotation(a);      
-      const NormalizedBBox& bbox = anno.bbox();
+      NormalizedBBox bbox = anno.bbox();
       if(IfValidBBox(bbox)){
+        has_valid_annotation = true;
         Annotation* filtered_anno = filtered_anno_group.add_annotation();
         filtered_anno->set_instance_id(anno.instance_id());
         NormalizedBBox* filtered_bbox = filtered_anno->mutable_bbox();
         filtered_bbox->CopyFrom(bbox);
       }
     }
+    if (has_valid_annotation) {
+      filtered_anno_group.set_group_label(anno_group.group_label());
+      anno_datum->mutable_annotation_group()->Add()->CopyFrom(filtered_anno_group);
+    }
   }
-  anno_datum->mutable_annotation_group()->Add()->CopyFrom(filtered_anno_group);
 }
 
 }  // namespace caffe
