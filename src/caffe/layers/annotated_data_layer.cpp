@@ -288,14 +288,14 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
               const Annotation& anno = anno_group.annotation(a);
               const NormalizedBBox& bbox = anno.bbox();
               if(IfValidBBox(bbox)){
-              top_label[idx++] = item_id;
-              top_label[idx++] = anno_group.group_label();
-              top_label[idx++] = anno.instance_id();
-              top_label[idx++] = bbox.xmin();
-              top_label[idx++] = bbox.ymin();
-              top_label[idx++] = bbox.xmax();
-              top_label[idx++] = bbox.ymax();
-              top_label[idx++] = bbox.difficult();
+                top_label[idx++] = item_id;
+                top_label[idx++] = anno_group.group_label();
+                top_label[idx++] = anno.instance_id();
+                top_label[idx++] = bbox.xmin();
+                top_label[idx++] = bbox.ymin();
+                top_label[idx++] = bbox.xmax();
+                top_label[idx++] = bbox.ymax();
+                top_label[idx++] = bbox.difficult();
               }
             }
           }
