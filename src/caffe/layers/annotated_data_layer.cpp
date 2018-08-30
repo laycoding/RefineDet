@@ -287,6 +287,7 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
             for (int a = 0; a < anno_group.annotation_size(); ++a) {
               const Annotation& anno = anno_group.annotation(a);
               const NormalizedBBox& bbox = anno.bbox();
+              if(IfValidBBox(bbox)){
               top_label[idx++] = item_id;
               top_label[idx++] = anno_group.group_label();
               top_label[idx++] = anno.instance_id();
@@ -295,6 +296,7 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
               top_label[idx++] = bbox.xmax();
               top_label[idx++] = bbox.ymax();
               top_label[idx++] = bbox.difficult();
+              }
             }
           }
         }
