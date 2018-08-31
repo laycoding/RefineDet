@@ -762,6 +762,8 @@ message AnnotatedDataParameter {
   // If provided, it will replace the AnnotationType stored in each
   // AnnotatedDatum.
   optional AnnotatedDatum.AnnotationType anno_type = 3;
+  optional bool savebatchimg = 4;
+  optional string savebatchimgdir =5;
 }
 
 message ArgMaxParameter {
@@ -1036,6 +1038,12 @@ message DetectionOutputParameter {
   optional string save_file = 12;
   //the objectness score is used for the anchor refinement module to filter easy negative anchor.
   optional float objectness_score = 24 [default = 0.01];
+  optional string source = 25;
+  optional string root_folder = 26;
+  optional bool save_txt = 27 [default = false];
+  optional bool save_draw_img =28 [default = false];
+  optional string save_dir =29;
+  
 }
 
 message DropoutParameter {
@@ -1317,6 +1325,8 @@ message MultiBoxLossParameter {
 
   //the objectness score is used for the anchor refinement module to filter easy negative anchor.
   optional float objectness_score = 24 [default = 0.01];
+  optional bool visualize = 25 [default = false];
+  
 }
 
 message MVNParameter {
