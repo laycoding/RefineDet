@@ -85,7 +85,14 @@ void AnnotatedDataLayer<Dtype>::DataLayerSetUp(
         // Note: Refer to caffe.proto for details about group_label and
         // instance_id.
         for (int g = 0; g < anno_datum.annotation_group_size(); ++g) {
-          num_bboxes += anno_datum.annotation_group(g).annotation_size();
+          int bboxes_peranno = 0;
+          for (int k = 0; k < anno_datum.annotation_group(g).annotation_size(); ++k){
+            const NormalizedBBox bbox = anno_datum.annotation_group(g).annotation(k).bbox();
+            if(IfValidBBox(bbox)){
+             bboxes_peranno += 1;
+            }
+          }
+          num_bboxes += bboxes_peranno;
         }
         label_shape[0] = 1;
         label_shape[1] = 1;
