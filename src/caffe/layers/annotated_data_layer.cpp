@@ -85,14 +85,7 @@ void AnnotatedDataLayer<Dtype>::DataLayerSetUp(
         // Note: Refer to caffe.proto for details about group_label and
         // instance_id.
         for (int g = 0; g < anno_datum.annotation_group_size(); ++g) {
-          int bboxes_peranno = 0;
-          for (int k = 0; k < anno_datum.annotation_group(g).annotation_size(); ++k){
-            const NormalizedBBox bbox = anno_datum.annotation_group(g).annotation(k).bbox();
-            if(IfValidBBox(bbox)){
-             bboxes_peranno += 1;
-            }
-          }
-          num_bboxes += bboxes_peranno;
+          num_bboxes += anno_datum.annotation_group(g).annotation_size();
         }
         label_shape[0] = 1;
         label_shape[1] = 1;
@@ -234,22 +227,25 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
         this->data_transformer_->Transform(*sampled_datum,
                                            &(this->transformed_data_),
                                            &transformed_anno_vec);
+
+        all_anno[item_id] = transformed_anno_vec;
         if (anno_type_ == AnnotatedDatum_AnnotationType_BBOX) {
           // Count the number of bboxes.
-          for (int g = 0; g < transformed_anno_vec.size(); ++g) {
-            int bboxes_peranno = 0;
-            for (int k = 0; k < anno_datum.annotation_group(g).annotation_size(); ++k){
-              const NormalizedBBox bbox = anno_datum.annotation_group(g).annotation(k).bbox();
+          const vector<AnnotationGroup>& anno_vec = all_anno[item_id];
+          for (int g = 0; g < anno_vec.size(); ++g) {
+            const AnnotationGroup& anno_group = anno_vec[g];
+            for (int a = 0; a < anno_group.annotation_size(); ++a) {
+              const Annotation& anno = anno_group.annotation(a);
+              const NormalizedBBox& bbox = anno.bbox();
               if(IfValidBBox(bbox)){
-               bboxes_peranno += 1;
+                num_bboxes += 1;
               }
             }
-            num_bboxes += bboxes_peranno;
-          }
+          }          
         } else {
           LOG(FATAL) << "Unknown annotation type.";
         }
-        all_anno[item_id] = transformed_anno_vec;
+
       } else {
         this->data_transformer_->Transform(sampled_datum->datum(),
                                            &(this->transformed_data_));
