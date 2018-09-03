@@ -190,8 +190,6 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     } else {
       sampled_datum = expand_datum;
     }
-    /*fliter small faces after sampling*/
-    AnnotatedDatum* flitered_datum = new AnnotatedDatum();
     CHECK(sampled_datum != NULL);
     timer.Start();
     vector<int> shape =
@@ -232,7 +230,14 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
         if (anno_type_ == AnnotatedDatum_AnnotationType_BBOX) {
           // Count the number of bboxes.
           for (int g = 0; g < transformed_anno_vec.size(); ++g) {
-            num_bboxes += transformed_anno_vec[g].annotation_size();
+            int bboxes_peranno = 0;
+            for (int k = 0; k < anno_datum.annotation_group(g).annotation_size(); ++k){
+              const NormalizedBBox bbox = anno_datum.annotation_group(g).annotation(k).bbox();
+              if(IfValidBBox(bbox)){
+               bboxes_peranno += 1;
+              }
+            }
+            num_bboxes += bboxes_peranno;
           }
         } else {
           LOG(FATAL) << "Unknown annotation type.";
@@ -256,7 +261,6 @@ void AnnotatedDataLayer<Dtype>::load_batch(Batch<Dtype>* batch) {
     if (transform_param.has_expand_param()) {
       delete expand_datum;
     }
-    delete flitered_datum;
     trans_time += timer.MicroSeconds();
 
     reader_.free().push(const_cast<AnnotatedDatum*>(&anno_datum));
